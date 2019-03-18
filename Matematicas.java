@@ -540,6 +540,10 @@ public class Matematicas {
       }
       numero/=16;
     }
+    
+    if (resultado.length()==1) {
+      resultado += "0";
+    }
      
     salida=invertirCadena(resultado);
      

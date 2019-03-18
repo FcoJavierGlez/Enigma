@@ -1,6 +1,5 @@
 package cifrado;
 
-import java.awt.image.ConvolveOp;
 import java.util.ArrayList;
 
 public class Llave {
@@ -12,6 +11,8 @@ public class Llave {
   private ArrayList<Integer> desplazamiento = new ArrayList<Integer>();       //Tabla con los desplazamientos de los caracteres del texto a cifrar.
   private String nombreLlave;
   
+  
+  //#################################     CONSTRUCTOR LLAVE NUEVA     #################################\\
   
   /**
    * Constructor
@@ -28,10 +29,13 @@ public class Llave {
     crearTablas();
     reiniciaUsados();
     usados.clear();
-    generaDesplazamiento();
-    numerosAleatorios.clear();
+    generaDesplazamiento();    
     nombreLlave = generaNombre();
-  }  
+    numerosAleatorios.clear();
+  }
+  
+  //#################################     CONSTRUCTOR LLAVE IMPORTADA     #################################\\
+  
   
   /**
    * Constructor cargando una llave importada 
@@ -43,7 +47,7 @@ public class Llave {
   /**
    * 
    */
-  private void cargaLlave(String llave) {
+  private void cargaLlave(String llave) {    //PENDIENTE DE REALIZAR!!!
     
   }  
   
@@ -75,9 +79,9 @@ public class Llave {
       } while(usados.get(azar));
       
       usados.set(azar, true);
-      tablaOriginal.add(new Caracteres(azar));
+      tablaOriginal.add(new Caracteres(azar));    //FUSIONAR TABLAS EN UNA Y AÑADIR VALORCIFRADO A CADA CARACTER COMO ATRIBUTO!!!
       tablaCifrada.add(new Caracteres(azar));
-      (tablaOriginal.get(i)).setValor(i);
+      (tablaOriginal.get(i)).setValor(i);         //FUSIONAR TABLAS EN UNA Y AÑADIR VALORCIFRADO A CADA CARACTER COMO ATRIBUTO!!!
       (tablaCifrada.get(i)).setValor(i);
       numerosAleatorios.add(azar);
     }
@@ -119,17 +123,25 @@ public class Llave {
    * 
    * @return
    */
-  private String generaNombre() {
-    String nombre = "|***|";    
-    for (int i=0; i<tablaCifrada.size(); i++) {    
+  private String generaNombre() {   //REFACTORIZAR CUANDO TERMINE
+    String nombre = "|***|";
+    for (int i=0; i<numerosAleatorios.size(); i++) {                    //Cabecera A 
+      nombre += Matematicas.conversionHexa(numerosAleatorios.get(i));      
+      if (i!=numerosAleatorios.size()-1) {
+        nombre += "|";
+      } else {
+        nombre += "\n|*-*|";
+      }
+    } 
+    for (int i=0; i<tablaCifrada.size(); i++) {                         //Cabecera B 
       nombre += Matematicas.conversionHexa((tablaCifrada.get(i)).getValor());      
       if (i!=tablaCifrada.size()-1) {
         nombre += "|";
       } else {
-        nombre += "\n|**|";
+        nombre += "\n|-*-|";
       }
-    }    
-    for (int i=0; i<desplazamiento.size(); i++) {
+    }   
+    for (int i=0; i<desplazamiento.size(); i++) {                       //Cuerpo
       nombre += Matematicas.conversionHexa(desplazamiento.get(i));      
       if (i!=desplazamiento.size()-1) {
          nombre += ":";
@@ -139,8 +151,8 @@ public class Llave {
   }
   
   
+  //#######################################     GETTERS     #######################################\\  
   
-  //#######################################   GETTERS   #######################################\\  
   /**
    * 
    * @return
@@ -231,7 +243,10 @@ public class Llave {
       }
     }
     return indice;
-  }  
+  }
+  
+  
+  //#################################     TO STRING     #################################\\
   
   public String toString() {
     return this.nombreLlave;
