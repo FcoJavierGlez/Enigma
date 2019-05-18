@@ -293,4 +293,22 @@ public class Cypher {
     }
     return salida;
   }
+  
+  //####################################   AUX   ##############################################\\
+  
+  
+  public void imprimeTablas(int numLlave) {
+    for (int i=0; i<Caracteres.getLongitud();i++) {
+      System.out.print("Posición " + i + ": " + (llaves.get(numLlave-1)).getCaracterOriginal(i) + " valor original: " + (llaves.get(numLlave-1)).getValorOriginal(i));
+      System.out.print("     ||     " + (llaves.get(numLlave-1)).getCaracterPosCifrado(i) + " valor cifrado: " + (llaves.get(numLlave-1)).getValorCifrado(i) + "\n");
+    }
+    
+    System.out.println("Longitud tabla original: " + (llaves.get(numLlave-1)).getTamanoTablaOriginal() + "total caracteres: " + Caracteres.getLongitud());
+    
+    for (int i=0; i<(llaves.get(numLlave-1)).getLongitudDesplazamiento();i++) {
+      System.out.print("\nPosición " + i + ": " + (llaves.get(numLlave-1)).getDesplazamiento(i));
+    }
+  }
+  
+  
 }

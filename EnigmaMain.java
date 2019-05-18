@@ -21,16 +21,16 @@ public class EnigmaMain {
       }
             
       switch (opcion) {
+        case 0:
+          c.imprimeTablas(numLlave);
+          break;
         case 1:
           c.generaLlave();
           break;
         case 2:
-          if (c.getNumeroLlaves()!=0) {
-            System.out.println(c.toString());
-          } else {
+          if (c.getNumeroLlaves()==0) 
             System.out.println("Primero debe generar o cargar alguna llave.");
-          }
-          
+           System.out.println(c.toString());
           break;
         case 3:
           numLlave = seleccionaLlave(numLlave, s, c);          

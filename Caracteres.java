@@ -2,7 +2,7 @@ package cifrado;
 
 public class Caracteres {
   //Variable
-  private static String caracteres = " ªº°\\!1|\"2@·3#$4%5&6¬/7(8)9=0?'¿¡^`[*+]¨´{çÇ}±<>;,:._-«»qwe€rtyuµiopaæsdfghjklñzxc¢vbnmQWER®TY¥UIOPAÆS§DÐFGHJKL£ÑZXC©VBNMáéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜâêîôûÂÊÎÔÛåÅ";
+  private static String caracteres = " ªº°\\!1|\"2@·3#$4%5&6¬/7(8)9=0?'¿¡^`[*+]¨´{çÇ}±<>;,:._-«»qwe€rtyuiopaæsdfghjklñzxc¢vbnmQWER®TY¥UIOPAÆS§DÐFGHJKL£ÑZXC©VBNMáéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜâêîôûÂÊÎÔÛåÅ";
   private String caracter;
   private int valor;
   

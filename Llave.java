@@ -195,6 +195,11 @@ public class Llave {
     return caracterCifrado;
   }  
   
+  
+  public String getCaracterPosCifrado(int indice) {
+    return (this.tablaCifrada.get(indice)).getCaracter();
+  }
+  
   public String getCaracterOriginal(int valor) {
     String caracterOriginal = "";
     for (int i=0; i<this.tablaOriginal.size();i++) {
@@ -226,7 +231,12 @@ public class Llave {
    */
   public int getTamanoTablaOriginal() {
     return (this.tablaOriginal).size();
-  }  
+  }
+  
+  
+  public int getLongitudDesplazamiento() {
+    return this.desplazamiento.size();
+  }
   
   /**
    * Compara el caracter insertado con la tabla de caracteres cifrados y devuelve su índice.
