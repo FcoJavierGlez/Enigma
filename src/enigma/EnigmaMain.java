@@ -36,13 +36,27 @@ public class EnigmaMain {
            System.out.println(c.toString());
           break;
         case 3:
-          numLlave = seleccionaLlave(numLlave, s, c);          
+        try {
+          c.seleccionaLlave(1);
+        } catch (ErrorSeleccionLlave e2) {
+          // TODO Auto-generated catch block
+          e2.printStackTrace();
+        }        
           break;
         case 4:
+        try {
           cifraMensaje(numLlave, s, c);
+        } catch (ErrorSeleccionLlave e) {
+          System.err.println("Debe seleccionar una llave.");  
+        }
           break;
-        case 5: 
-          descifraMensaje(numLlave, s, c);          
+        case 5:
+        try {
+          descifraMensaje(numLlave, s, c);
+        } catch (ErrorSeleccionLlave e) {
+          System.err.println("Debe seleccionar una llave.");  
+        }
+                 
           break;
         default:
           
@@ -60,22 +74,17 @@ public class EnigmaMain {
    * @param numLlave
    * @param s
    * @param c
+   * @throws ErrorSeleccionLlave 
    */
-  private static void descifraMensaje(int numLlave, Scanner s, Cypher c) {
+  private static void descifraMensaje(int numLlave, Scanner s, Cypher c) throws ErrorSeleccionLlave{
     String mensaje;
     String cifrado;
-    if (c.getNumeroLlaves()<1) {
-      System.out.println("Primero debes generar una llave.");
-    } else if (numLlave==0) {
-      System.out.println("Selecciona una llave.");
-    } else {
-      System.out.println("Escriba el mensaje a descifrar: ");
+    System.out.println("Escriba el mensaje a descifrar: ");
     cifrado = s.nextLine();
     
-    mensaje = c.desencripta(numLlave, cifrado);
+    mensaje = c.desencripta(cifrado);
     
     System.out.println(mensaje);
-    }
   }
 
 
@@ -85,22 +94,17 @@ public class EnigmaMain {
    * @param numLlave
    * @param s
    * @param c
+   * @throws ErrorSeleccionLlave 
    */
-  private static void cifraMensaje(int numLlave, Scanner s, Cypher c) {
+  private static void cifraMensaje(int numLlave, Scanner s, Cypher c) throws ErrorSeleccionLlave {
     String mensaje;
     String cifrado;
-    if (c.getNumeroLlaves()<1) {
-      System.out.println("Primero debes generar una llave.");
-    } else if (numLlave==0) {
-      System.out.println("Selecciona una llave.");
-    } else {
-      System.out.println("Escriba el mensaje a cifrar: ");
-      mensaje = s.nextLine();
-      
-      cifrado = c.encripta(numLlave, mensaje);
-      
-      System.out.println(cifrado);
-    }
+    System.out.println("Escriba el mensaje a cifrar: ");
+    mensaje = s.nextLine();
+    
+    cifrado = c.encripta(mensaje);
+    
+    System.out.println(cifrado);
   }
 
 

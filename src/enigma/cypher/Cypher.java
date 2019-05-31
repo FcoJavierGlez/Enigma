@@ -11,8 +11,9 @@ import java.util.ArrayList;
  */
 public class Cypher {
   
-  private static ArrayList<Llave> llaves = new ArrayList<Llave>();                   //Tabla de caracteres con valores aleatorios.
+  private static ArrayList<Llave> llaves = new ArrayList<Llave>();   //Tabla de caracteres con valores aleatorios.
   private static String salida;
+  private Llave llaveSeleccionada;
   
   
   //#################################     CONSTRUCTORES   #################################\\  
@@ -44,6 +45,38 @@ public class Cypher {
     llaves.add(new Llave());
   }
   
+  /**
+   * Selecciona una llave de la lista
+   * 
+   * @param numLlave  Posición actual de la llave en la lista de llaves almacenadas.
+   * @throws ErrorSeleccionLlave 
+   */
+  public void seleccionaLlave(int numLlave) throws ErrorSeleccionLlave {
+    if (numLlave<1 || numLlave>llaves.size())
+      throw new ErrorSeleccionLlave();
+    llaveSeleccionada=llaves.get(numLlave-1);
+  }
+  
+  /**
+   * Elimina una llave de la lista de llaves almacenadas.
+   * 
+   * @param numLlave  Posición actual de la llave en la lista de llaves almacenadas.
+   */
+  public void eliminaLlave(int numLlave) {
+    if (llaves.get(numLlave-1)==llaveSeleccionada)
+      llaveSeleccionada=null;
+    llaves.remove(numLlave-1);
+  }
+  
+  /**
+   * @throws ErrorSeleccionLlave 
+   * 
+   */
+  private void compruebaLlave() throws ErrorSeleccionLlave{
+    if (llaveSeleccionada==null)
+      throw new ErrorSeleccionLlave();
+    
+  }
   
   /**
    * 
@@ -52,13 +85,35 @@ public class Cypher {
    * @param numLlave Número de llave (int) seleccionada
    * @param linea    Línea (String) a cifrar.
    * @return         Devuelve (String) cifrado.
+   * 
+   * @throws ErrorSeleccionLlave 
    */
-  public String encripta(int numLlave, String linea) {
+  public String encripta(String linea) throws ErrorSeleccionLlave{
+    compruebaLlave();
     salida = "";
     for (int i=0; i<linea.length();i++) {
-      salida = salidaCifrada(numLlave, salida, asignaValorCifrado(numLlave, linea, i));
+      salida = salidaCifrada(salida, asignaValorCifrado(linea, i));
     }
     return transformaCadena(salida);
+  }
+
+  /**
+   * 
+   * Encripta el texto almacenado en la Clase Texto.
+   * 
+   * @param numLlave Número de llave (int) seleccionada
+   * 
+   * @throws ErrorSeleccionLlave 
+   */
+  public void encriptaTexto() throws ErrorSeleccionLlave{
+    compruebaLlave();
+    Texto.borraSalida();
+    for (int i=0; i<Texto.getTamannoEntrada(); i++) { //Selecciona una línea de entrada de Texto
+      salida = "";
+      for (int j=0; j<Texto.getLineaEntrada(i).length();j++)  //Encripta todos los caracteres de la línea
+        salida = salidaCifrada(salida, asignaValorCifrado(Texto.getLineaEntrada(i), j));
+      Texto.addSalida(transformaCadena(salida));
+    }
   }
 
   /**
@@ -69,13 +124,25 @@ public class Cypher {
    * @param valorCifrado    Valor del caracter cifrado a concatenar a la variable salida.
    * @return                Devuelve la versión actualizada, con el nuevo caracter concatenado, de la variable salida (String).
    */
-  private String salidaCifrada(int numLlave, String salida, int valorCifrado) {
-    if (valorCifrado>=(llaves.get(numLlave-1)).getTamanoTablaOriginal()) 
-      valorCifrado %= (llaves.get(numLlave-1)).getTamanoTablaOriginal();
+  private String salidaCifrada(String salida, int valorCifrado) {
+    return salida += llaveSeleccionada.getCaracterCifrado(ajustaValorCifrado(valorCifrado));
+  }
+
+
+  /**
+   * Si el valor cifrado del caracter rebasa el índice de la tabla
+   * se ajusta su valor a la posición correcta para poder encontrar
+   * el caracter cifrado.
+   * 
+   * @param valorCifrado Resultado de establecer el valor del caracter cifrado
+   * @return  Valor del caracter cifrado
+   */
+  private int ajustaValorCifrado(int valorCifrado) {
+    if (valorCifrado>=(llaveSeleccionada.getTamanoTablaOriginal())) 
+      return valorCifrado %= (llaveSeleccionada.getTamanoTablaOriginal());
     if (valorCifrado<0)
-      valorCifrado = (llaves.get(numLlave-1)).getTamanoTablaOriginal() - Math.abs(valorCifrado);
-    salida += (llaves.get(numLlave-1)).getCaracterCifrado(valorCifrado);
-    return salida;
+      return llaveSeleccionada.getTamanoTablaOriginal() - Math.abs(valorCifrado);
+    return valorCifrado;
   }
 
   /**
@@ -86,13 +153,8 @@ public class Cypher {
    * @param i      Variable de control que selecciona la posición del caracter dentro de la línea a cifrar.
    * @return       Devuelve el valor del caracter cifrado
    */
-  private int asignaValorCifrado(int numLlave, String linea, int i) {
-    int valor1 = buscaValorOriginal(numLlave, linea.substring(i, i+1));
-    int valor2 = (llaves.get(numLlave-1)).getDesplazamiento(i);
-    if (i%2==0)
-      return valor1 + valor2;        
-    else
-      return valor1 - valor2;
+  private int asignaValorCifrado(String linea, int i) {
+    return (i%2==0) ? (buscaValorOriginal(linea.substring(i, i+1)) + llaveSeleccionada.getDesplazamiento(i)) : (buscaValorOriginal(linea.substring(i, i+1)) - llaveSeleccionada.getDesplazamiento(i));
   }
   
   
@@ -102,13 +164,35 @@ public class Cypher {
    * @param numLlave Número de llave (int) seleccionada
    * @param linea
    * @return
+   * 
+   * @throws ErrorSeleccionLlave 
+   * 
    */
-  public String desencripta(int numLlave, String linea) {
+  public String desencripta(String linea) throws ErrorSeleccionLlave {
+    compruebaLlave();
     salida = "";
     for (int i=0; i<linea.length();i++) {
-      salida = salidaDescifrada(numLlave, salida, asignaValorDescifrado(numLlave, transformaCadena(linea), i));
+      salida = salidaDescifrada(salida, asignaValorDescifrado(transformaCadena(linea), i));
     }
     return salida;
+  }
+  
+  /**
+   * Desencripta el texto almacenado en la Clase Texto.
+   * 
+   * @param numLlave Número de llave (int) seleccionada
+   * 
+   * @throws ErrorSeleccionLlave 
+   */
+  public void desencriptaTexto() throws ErrorSeleccionLlave {
+    compruebaLlave();
+    Texto.borraSalida();
+    for (int i=0; i<Texto.getTamannoEntrada(); i++) { //Selecciona una línea de entrada de Texto
+      salida = "";
+      for (int j=0; j<Texto.getLineaEntrada(i).length();j++) //Desencripta todos los caracteres de la línea
+        salida = salidaDescifrada(salida, asignaValorDescifrado(transformaCadena(Texto.getLineaEntrada(i)), j));
+      Texto.addSalida(salida);
+    }
   }
 
   /**
@@ -119,13 +203,25 @@ public class Cypher {
    * @param valorDescifrado  Valor del caracter descifrado a concatenar a la variable salida.
    * @return                 Devuelve la versión actualizada, con el nuevo caracter concatenado, de la variable salida (String).
    */
-  private String salidaDescifrada(int numLlave, String salida, int valorDescifrado) {
-    if (valorDescifrado>=(llaves.get(numLlave-1)).getTamanoTablaOriginal())
-      valorDescifrado %= (llaves.get(numLlave-1)).getTamanoTablaOriginal();
+  private String salidaDescifrada(String salida, int valorDescifrado) {
+    return salida += buscaCaracterOriginal(ajustaValorDescifrado(valorDescifrado));
+  }
+
+
+  /**
+   * Si el valor descifrado del caracter rebasa el índice de la tabla
+   * se ajusta su valor a la posición correcta para poder encontrar
+   * el caracter descifrado.
+   * 
+   * @param valorDescifrado Resultado de establecer el valor del caracter original
+   * @return  Valor del caracter original
+   */
+  private int ajustaValorDescifrado(int valorDescifrado) {
+    if (valorDescifrado>=llaveSeleccionada.getTamanoTablaOriginal())
+      return valorDescifrado %= llaveSeleccionada.getTamanoTablaOriginal();
     if (valorDescifrado<0)
-      valorDescifrado = (llaves.get(numLlave-1)).getTamanoTablaOriginal() - Math.abs(valorDescifrado);
-    salida += buscaCaracterOriginal(numLlave, valorDescifrado);
-    return salida;
+      return llaveSeleccionada.getTamanoTablaOriginal() - Math.abs(valorDescifrado);
+    return valorDescifrado;
   }
 
   /**
@@ -136,13 +232,9 @@ public class Cypher {
    * @param i        Variable de control que selecciona la posición del caracter dentro de la línea a descifrar.
    * @return         Devuelve el valor del caracter descifrado
    */
-  private int asignaValorDescifrado(int numLlave, String linea, int i) {
-    int valor1 = buscaValorCifrado(numLlave, linea.substring(i, i+1));
-    int valor2 = (llaves.get(numLlave-1)).getDesplazamiento(i);
-    if (i%2==0) 
-      return valor1 - valor2;        
-    else 
-      return valor1 + valor2;
+  private int asignaValorDescifrado(String linea, int i) {
+    return (i%2==0) ? (buscaValorCifrado(linea.substring(i, i+1)) - llaveSeleccionada.getDesplazamiento(i)) : 
+      (buscaValorCifrado(linea.substring(i, i+1)) + llaveSeleccionada.getDesplazamiento(i));
   }
   
   
@@ -171,7 +263,7 @@ public class Cypher {
    * @param linea  Línea (String) a invertir
    * @return       Línea (String) invertida
    */
-  private static String invertirCadena(String linea) {     //Invertimos el orden de la cadena
+  private static String invertirCadena(String linea) { 
     salida="";
     for (int i=linea.length()-1; i>-1; i--) {     //Leemos la cadena y almacenamos los caracteres en variable salida
       salida+=linea.charAt(i);
@@ -198,10 +290,10 @@ public class Cypher {
    * @param caracter Caracter (String) que deseamos comparar
    * @return         Devuelve el valor (int) del caracter encontrado en la tabla original
    */
-  private int buscaValorOriginal(int numLlave, String caracter) {
-    for (int i=0; i<(llaves.get(numLlave-1)).getTamanoTablaOriginal();i++) {
-      if (caracter.equals((llaves.get(numLlave-1)).getCaracterOriginal(i)))
-        return (llaves.get(numLlave-1)).getValorOriginal(i);
+  private int buscaValorOriginal(String caracter) {
+    for (int i=0; i<llaveSeleccionada.getTamanoTablaOriginal();i++) {
+      if (caracter.equals(llaveSeleccionada.getCaracterOriginal(i)))
+        return llaveSeleccionada.getValorOriginal(i);
     }
     return 0;
   }
@@ -214,11 +306,11 @@ public class Cypher {
    * @param valor  Valor (int) del caracter que estamos buscando 
    * @return       Devuelve el caracter (String) encontrado en la tabla original
    */
-  private String buscaCaracterOriginal(int numLlave, int valor) {
+  private String buscaCaracterOriginal(int valor) {
     String salida = "";
-    for (int i=0; i<(llaves.get(numLlave-1)).getTamanoTablaOriginal();i++) {
-      if (valor==(llaves.get(numLlave-1)).getValorOriginal(i)) {
-        salida = (llaves.get(numLlave-1)).getCaracterOriginal(valor);        
+    for (int i=0; i<llaveSeleccionada.getTamanoTablaOriginal();i++) {
+      if (valor==llaveSeleccionada.getValorOriginal(i)) {
+        salida = llaveSeleccionada.getCaracterOriginal(valor);        
         break;
       }
     }
@@ -233,9 +325,9 @@ public class Cypher {
    * @param caracter Caracter (String) que deseamos comparar
    * @return         Devuelve el valor (int) del caracter encontrado en la tabla cifrada
    */
-  private int buscaValorCifrado(int numLlave, String caracter) {
-    int indice = (llaves.get(numLlave-1)).comparaCaracterCifrado(caracter);
-    return (llaves.get(numLlave-1)).getValorCifrado(indice);
+  private int buscaValorCifrado(String caracter) {
+    int indice = llaveSeleccionada.comparaCaracterCifrado(caracter);
+    return llaveSeleccionada.getValorCifrado(indice);
   }
   
   
