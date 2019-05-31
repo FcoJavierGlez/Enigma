@@ -1,5 +1,6 @@
 package enigma.cypher;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -46,6 +47,16 @@ public class Cypher {
   }
   
   /**
+   * Importa una llave ya creada.
+   * 
+   * @throws versionLlaveIncorrecta 
+   * @throws IOException 
+   */
+  public void importaLlave(String ruta) throws IOException, versionLlaveIncorrecta {
+    llaves.add(new Llave(ruta));
+  }
+  
+  /**
    * Selecciona una llave de la lista
    * 
    * @param numLlave  Posición actual de la llave en la lista de llaves almacenadas.
@@ -75,7 +86,6 @@ public class Cypher {
   private void compruebaLlave() throws ErrorSeleccionLlave{
     if (llaveSeleccionada==null)
       throw new ErrorSeleccionLlave();
-    
   }
   
   /**
