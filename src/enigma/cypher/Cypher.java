@@ -37,7 +37,7 @@ public class Cypher {
   }
   
   
-  //#################################     MÉTODOS   #################################\\
+  //#################################     GESTIÓN DE LLAVES   #################################\\
   
   /**
    * Crea una nueva llave.
@@ -49,18 +49,35 @@ public class Cypher {
   /**
    * Importa una llave ya creada.
    * 
-   * @throws versionLlaveIncorrecta 
-   * @throws IOException 
+   * @param ruta  Ruta y nombre de donde se va a importar la llave.
+   * 
+   * @throws versionLlaveIncorrecta Se lanza esta excepción cuando la versión de la llave a importar no coincide con la versión del programa.
+   * @throws IOException Se lanza esta cuando se peuda leer el fichero a importar.
+   * @throws cabeceraInvalida Se lanza esta excepción si al validar la cabecera hay algún problema.
    */
-  public void importaLlave(String ruta) throws IOException, versionLlaveIncorrecta {
+  public void importaLlave(String ruta) throws IOException, versionLlaveIncorrecta, cabeceraInvalida {
     llaves.add(new Llave(ruta));
+  }
+  
+  /**
+   * Importa una llave ya creada.
+   * 
+   * @param ruta  Ruta y nombre donde se va a expotar la llave.
+   * 
+   * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
+   * @throws IOException  Se lanza esta cuando se peuda leer el fichero a importar.
+   */
+  public void exportaLlave(String ruta) throws ErrorSeleccionLlave, IOException {
+    compruebaLlave();
+    llaveSeleccionada.exportaLlave(ruta);
   }
   
   /**
    * Selecciona una llave de la lista
    * 
    * @param numLlave  Posición actual de la llave en la lista de llaves almacenadas.
-   * @throws ErrorSeleccionLlave 
+   * 
+   * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
   public void seleccionaLlave(int numLlave) throws ErrorSeleccionLlave {
     if (numLlave<1 || numLlave>llaves.size())
@@ -80,32 +97,17 @@ public class Cypher {
   }
   
   /**
-   * @throws ErrorSeleccionLlave 
+   * Comprueba si hay alguna llave seleccionada.
    * 
+   * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
   private void compruebaLlave() throws ErrorSeleccionLlave{
     if (llaveSeleccionada==null)
       throw new ErrorSeleccionLlave();
   }
   
-  /**
-   * 
-   * Encripta la línea pasada por parámetro
-   * 
-   * @param numLlave Número de llave (int) seleccionada
-   * @param linea    Línea (String) a cifrar.
-   * @return         Devuelve (String) cifrado.
-   * 
-   * @throws ErrorSeleccionLlave 
-   */
-  public String encripta(String linea) throws ErrorSeleccionLlave{
-    compruebaLlave();
-    salida = "";
-    for (int i=0; i<linea.length();i++) {
-      salida = salidaCifrada(salida, asignaValorCifrado(linea, i));
-    }
-    return transformaCadena(salida);
-  }
+  
+  //#################################     ENCRIPTAR   #################################\\
 
   /**
    * 
@@ -113,7 +115,7 @@ public class Cypher {
    * 
    * @param numLlave Número de llave (int) seleccionada
    * 
-   * @throws ErrorSeleccionLlave 
+   * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
   public void encriptaTexto() throws ErrorSeleccionLlave{
     compruebaLlave();
@@ -129,7 +131,6 @@ public class Cypher {
   /**
    * Concatena y devuelve el conjunto actual de los caracteres cifrados.
    * 
-   * @param numLlave        Número de llave (int) seleccionada
    * @param salida          Valor actual de la variable salida (String) antes de concatenarle otro caracter cifrado.
    * @param valorCifrado    Valor del caracter cifrado a concatenar a la variable salida.
    * @return                Devuelve la versión actualizada, con el nuevo caracter concatenado, de la variable salida (String).
@@ -137,8 +138,7 @@ public class Cypher {
   private String salidaCifrada(String salida, int valorCifrado) {
     return salida += llaveSeleccionada.getCaracterCifrado(ajustaValorCifrado(valorCifrado));
   }
-
-
+  
   /**
    * Si el valor cifrado del caracter rebasa el índice de la tabla
    * se ajusta su valor a la posición correcta para poder encontrar
@@ -158,7 +158,6 @@ public class Cypher {
   /**
    * Asigna un valor cifrado correspondiente al caracter de la posición "i".
    * 
-   * @param        numLlave Número de llave (int) seleccionada
    * @param linea  Línea (String) que se desea cifrar
    * @param i      Variable de control que selecciona la posición del caracter dentro de la línea a cifrar.
    * @return       Devuelve el valor del caracter cifrado
@@ -168,31 +167,12 @@ public class Cypher {
   }
   
   
-  /**
-   * Desencripta la línea pasada por parámetro
-   * 
-   * @param numLlave Número de llave (int) seleccionada
-   * @param linea
-   * @return
-   * 
-   * @throws ErrorSeleccionLlave 
-   * 
-   */
-  public String desencripta(String linea) throws ErrorSeleccionLlave {
-    compruebaLlave();
-    salida = "";
-    for (int i=0; i<linea.length();i++) {
-      salida = salidaDescifrada(salida, asignaValorDescifrado(transformaCadena(linea), i));
-    }
-    return salida;
-  }
+  //#################################     DESENCRIPTAR   #################################\\
   
   /**
    * Desencripta el texto almacenado en la Clase Texto.
    * 
-   * @param numLlave Número de llave (int) seleccionada
-   * 
-   * @throws ErrorSeleccionLlave 
+   * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
   public void desencriptaTexto() throws ErrorSeleccionLlave {
     compruebaLlave();
@@ -208,7 +188,6 @@ public class Cypher {
   /**
    * Concatena y devuelve el conjunto actual de los caracteres descifrados.
    * 
-   * @param numLlave         Número de llave (int) seleccionada
    * @param salida           Valor actual de la variable salida (String) antes de concatenarle otro caracter descifrado.
    * @param valorDescifrado  Valor del caracter descifrado a concatenar a la variable salida.
    * @return                 Devuelve la versión actualizada, con el nuevo caracter concatenado, de la variable salida (String).
@@ -216,7 +195,6 @@ public class Cypher {
   private String salidaDescifrada(String salida, int valorDescifrado) {
     return salida += buscaCaracterOriginal(ajustaValorDescifrado(valorDescifrado));
   }
-
 
   /**
    * Si el valor descifrado del caracter rebasa el índice de la tabla
@@ -237,7 +215,6 @@ public class Cypher {
   /**
    * Asigna un valor descifrado correspondiente al caracter de la posición "i".
    * 
-   * @param numLlave Número de llave (int) seleccionada
    * @param linea    Línea (String) que se desea descifrar
    * @param i        Variable de control que selecciona la posición del caracter dentro de la línea a descifrar.
    * @return         Devuelve el valor del caracter descifrado
@@ -247,7 +224,7 @@ public class Cypher {
       (buscaValorCifrado(linea.substring(i, i+1)) + llaveSeleccionada.getDesplazamiento(i));
   }
   
-  
+  //#################################     ÚTILES   #################################\\
   
   /**
    * Cambia las mayúsculas a minúsculas, y viceversa, de la línea que recibe por parámetro
@@ -257,15 +234,11 @@ public class Cypher {
    */
   private static String cambiaMayusMinus(String linea) {
     salida = "";
-    for (int i=0; i<linea.length();i++) {
-      if (linea.substring(i, i+1).equals(linea.substring(i, i+1).toUpperCase())) 
-        salida += linea.substring(i, i+1).toLowerCase();
-      else 
-        salida += linea.substring(i, i+1).toUpperCase();
-    }
+    for (int i=0; i<linea.length();i++) 
+      salida += (linea.substring(i, i+1).equals(linea.substring(i, i+1).toUpperCase())) ? 
+          (linea.substring(i, i+1).toLowerCase()): (linea.substring(i, i+1).toUpperCase());
     return salida;
   }
-  
   
   /** 
    * Invierte la línea que recibe por parámetro
@@ -275,12 +248,10 @@ public class Cypher {
    */
   private static String invertirCadena(String linea) { 
     salida="";
-    for (int i=linea.length()-1; i>-1; i--) {     //Leemos la cadena y almacenamos los caracteres en variable salida
+    for (int i=linea.length()-1; i>-1; i--)     //Leemos la cadena y almacenamos los caracteres en variable salida
       salida+=linea.charAt(i);
-    }
     return salida;
   }
-  
   
   /**
    * Cambia las mayúsculas a minúsculas, y viceversa, e invierte la línea que recibe por parámetro.
@@ -292,11 +263,9 @@ public class Cypher {
     return invertirCadena(cambiaMayusMinus(linea));
   }
   
-  
   /**
    * Busca el valor del caracter de la tabla original comparándolo con el caracter que le pasamos.
    * 
-   * @param numLlave Número de llave (int) seleccionada
    * @param caracter Caracter (String) que deseamos comparar
    * @return         Devuelve el valor (int) del caracter encontrado en la tabla original
    */
@@ -308,30 +277,23 @@ public class Cypher {
     return 0;
   }
   
-  
   /**
    * Busca el caracter de la tabla original a partir del valor del caracter.
    * 
-   * @param        numLlave Número de llave (int) seleccionada
    * @param valor  Valor (int) del caracter que estamos buscando 
    * @return       Devuelve el caracter (String) encontrado en la tabla original
    */
   private String buscaCaracterOriginal(int valor) {
-    String salida = "";
     for (int i=0; i<llaveSeleccionada.getTamanoTablaOriginal();i++) {
-      if (valor==llaveSeleccionada.getValorOriginal(i)) {
-        salida = llaveSeleccionada.getCaracterOriginal(valor);        
-        break;
-      }
+      if (valor==llaveSeleccionada.getValorOriginal(i)) 
+        return llaveSeleccionada.getCaracterOriginal(valor);
     }
-    return salida;
+    return "";
   }
-  
   
   /**
    * Devuelve el valor del caracter cifrado buscado.
    * 
-   * @param numLlave Número de llave (int) seleccionada
    * @param caracter Caracter (String) que deseamos comparar
    * @return         Devuelve el valor (int) del caracter encontrado en la tabla cifrada
    */
@@ -356,21 +318,61 @@ public class Cypher {
     return salida;
   }
   
-  //####################################   AUX   ##############################################\\
+  //####################################   TABLAS TEST   ##############################################\\
   
-  
-  public void imprimeTablas(int numLlave) {
+  /**
+   * @throws ErrorSeleccionLlave 
+   */
+  public void imprimeTablas() throws ErrorSeleccionLlave {
+    compruebaLlave();
     for (int i=0; i<Caracteres.getLongitud();i++) {
-      System.out.print("Posición " + i + ": " + (llaves.get(numLlave-1)).getCaracterOriginal(i) + " valor original: " + (llaves.get(numLlave-1)).getValorOriginal(i));
-      System.out.print("     ||     " + (llaves.get(numLlave-1)).getCaracterPosCifrado(i) + " valor cifrado: " + (llaves.get(numLlave-1)).getValorCifrado(i) + "\n");
+      System.out.print("Posición " + i + ": " + llaveSeleccionada.getCaracterOriginal(i) + " valor original: " + llaveSeleccionada.getValorOriginal(i));
+      System.out.print("     ||     " + llaveSeleccionada.getCaracterOriginal(i) + " valor cifrado: " + llaveSeleccionada.getValorCifrado(i) + "\n");
     }
     
-    System.out.println("Longitud tabla original: " + (llaves.get(numLlave-1)).getTamanoTablaOriginal() + "total caracteres: " + Caracteres.getLongitud());
+    System.out.println("Longitud tabla original: " + llaveSeleccionada.getTamanoTablaOriginal() + "total caracteres: " + Caracteres.getLongitud());
     
-    for (int i=0; i<(llaves.get(numLlave-1)).getLongitudDesplazamiento();i++) {
-      System.out.print("\nPosición " + i + ": " + (llaves.get(numLlave-1)).getDesplazamiento(i));
+    for (int i=0; i<llaveSeleccionada.getLongitudDesplazamiento();i++) {
+      System.out.print("\nPosición " + i + ": " + llaveSeleccionada.getDesplazamiento(i));
     }
   }
   
+  //####################################   PRUEBAS   ##############################################\\
+  
+  /**
+   * 
+   * Encripta la línea pasada por parámetro
+   * 
+   * @param numLlave Número de llave (int) seleccionada
+   * @param linea    Línea (String) a cifrar.
+   * @return         Devuelve (String) cifrado.
+   * 
+   * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
+   */
+  public String encripta(String linea) throws ErrorSeleccionLlave{
+    compruebaLlave();
+    salida = "";
+    for (int i=0; i<linea.length();i++) {
+      salida = salidaCifrada(salida, asignaValorCifrado(linea, i));
+    }
+    return transformaCadena(salida);
+  }
+  
+  /**
+   * Desencripta la línea pasada por parámetro
+   * 
+   * @param linea
+   * @return
+   * 
+   * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
+   */
+  public String desencripta(String linea) throws ErrorSeleccionLlave {
+    compruebaLlave();
+    salida = "";
+    for (int i=0; i<linea.length();i++) {
+      salida = salidaDescifrada(salida, asignaValorDescifrado(transformaCadena(linea), i));
+    }
+    return salida;
+  }
   
 }

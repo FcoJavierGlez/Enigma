@@ -13,8 +13,6 @@ import java.util.ArrayList;
  * con la finalidad de que la Clase Cypher pueda leer las líneas almacenadas y poder cifrar/descifrar cada
  * una de ellas de forma individual.
  * 
- * 
- * 
  * @author Francisco Javier González Sabariego
  *
  */

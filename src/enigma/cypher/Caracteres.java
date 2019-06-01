@@ -2,7 +2,7 @@ package enigma.cypher;
 
 public class Caracteres {
   //Variable
-  private static String caracteres = " ªº°\\!1|\"2@·3#$4%5&6¬/7(8)9=0?'¿¡^`[*+]¨´{çÇ}±<>;,:._-«»qwe€rtyuiopaæsdfghjklñzxc¢vbnmQWER®TY¥UIOPAÆS§DÐFGHJKL£ÑZXC©VBNMáéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜâêîôûÂÊÎÔÛåÅ";
+  private static final String CARACTERES = " ªº°\\!1|\"2@·3#$4%5&6¬/7(8)9=0?'¿¡^`[*+]¨´{çÇ}±<>;,:._-«»qwe€rtyuiopaæsdfghjklñzxc¢vbnmQWER®TY¥UIOPAÆS§DÐFGHJKL£ÑZXC©VBNMáéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜâêîôûÂÊÎÔÛåÅ";
   private String caracter;
   private int valor;
   
@@ -11,10 +11,11 @@ public class Caracteres {
   
   /**
    * Constructor
+   * 
    * @param orden Número de posición
    */
   public Caracteres(int orden) {
-    this.caracter = caracteres.substring(orden, orden+1);
+    this.caracter = CARACTERES.substring(orden, orden+1);
     this.valor = orden;
   }
   
@@ -22,9 +23,9 @@ public class Caracteres {
   
   
   /**
+   * Asigna un nuevo valor al caracter.
    * 
-   * 
-   * @param nuevoValor
+   * @param nuevoValor  Nuevo valor (int).
    */
   void setValor(int nuevoValor) {
     this.valor = nuevoValor;
@@ -32,6 +33,17 @@ public class Caracteres {
   
   
   //#################################     GETTERS     #################################\\
+  
+  /**
+   * Devuelve la posición del caracter pasado como parámetro dentro de la
+   * constante CARACTERES.
+   * 
+   * @param caracter
+   * @return
+   */
+  public int getPosicionCaracter(String caracter) {
+    return CARACTERES.indexOf(caracter);
+  }
   
   /**
    * Devuelve el caracter.
@@ -58,7 +70,7 @@ public class Caracteres {
    * @return Devuelve la longitud (int) de la variable caracteres
    */
   static int getLongitud() {
-    return caracteres.length();
+    return CARACTERES.length();
   }
   
   
