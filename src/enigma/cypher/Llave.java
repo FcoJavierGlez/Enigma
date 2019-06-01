@@ -38,7 +38,7 @@ public class Llave {
   
   
   
-  //#################################     CONSTRUCTOR LLAVE NUEVA     #################################\\
+  //#################################     GENERAR LLAVE     #################################\\
   
   /**
    * Constructor
@@ -197,7 +197,7 @@ public class Llave {
     return nombre;
   }
   
-  //#################################     CONSTRUCTOR LLAVE IMPORTADA     #################################\\
+  //#################################     IMPORTAR LLAVE     #################################\\
   
   
   /**
@@ -219,7 +219,7 @@ public class Llave {
    * @throws cabeceraInvalida 
    * 
    */
-  private void importaLlave(String ruta) throws IOException, versionLlaveIncorrecta, cabeceraInvalida {    //PENDIENTE DE REALIZAR!!!
+  private void importaLlave(String ruta) throws IOException, versionLlaveIncorrecta, cabeceraInvalida { 
     creaLector(ruta);
     leeFichero();
     creaLlave();
@@ -465,17 +465,9 @@ public class Llave {
    */
   private void creaEscritor(String ruta) throws FileNotFoundException {
     w = new DataOutputStream(new FileOutputStream(ruta+".kyph"));
-//    try {
-//      DataOutputStream w = new DataOutputStream(new FileOutputStream("prueba"+".kyph"));
-//      
-//      for (int i=0; i<salida.size(); i++) {
-//        w.writeUTF(salida.get(i)+"\n");
-//      }
-//      w.close();
-//    } catch (IOException e) {}
-    
   }
-
+  
+  
   //#######################################     GETTERS     #######################################\\  
   
   /**
