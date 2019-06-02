@@ -27,6 +27,9 @@ public class Llave {
   private ArrayList<Caracteres> tablaCifrada = new ArrayList<Caracteres>();   //Tabla de caracteres con valores aleatorios.
   private ArrayList<Boolean> usados = new ArrayList<Boolean>();               //Tabla de valores booleanos del mismo tamaño que las tablas de caracteres
   private ArrayList<Integer> desplazamiento = new ArrayList<Integer>();       //Tabla con los desplazamientos de los caracteres del texto a cifrar.
+  private ArrayList<Integer> indiceDesplazamiento = new ArrayList<Integer>(); //Tabla con los índices de los desplazamientos.
+  private ArrayList<Integer> operacion = new ArrayList<Integer>();            //Tabla con los valores de las operaciones.
+  private ArrayList<Integer> caseCaracter = new ArrayList<Integer>();         //Tabla con los índices de los desplazamientos.
   private String nombreLlave;
   
   //Variables para importar llaves:
@@ -53,10 +56,58 @@ public class Llave {
   private void generaLlave() {
     generarUsados();
     crearTablas();
-    reiniciaUsados();
-    usados.clear();
-    generaDesplazamiento();    
+    //reiniciaUsados();
+    creaTablasDesplazamiento();
+    creaTablasBinarias();
     nombreLlave = generaNombre();
+    limpiaTablas();
+  }
+  
+  /**
+   * Genera las tablas operacion y caseCaracter, ambas con 0 y 1.
+   */
+  private void creaTablasBinarias() {
+    creaTablaOperacion();
+    creaTablaCase();
+  }
+  
+  /**
+   * Genera aleatoriamente 0 y 1 en la tabla caseCaracter.
+   */
+  private void creaTablaCase() {
+    for (int i=0; i<desplazamiento.size(); i++)
+      caseCaracter.add((int)(Math.random()*2));
+  }
+  
+  /**
+   * Genera aleatoriamente 0 y 1 en la tabla operacion.
+   */
+  private void creaTablaOperacion() {
+    for (int i=0; i<desplazamiento.size(); i++)
+      operacion.add((int)(Math.random()*2));
+  }
+
+  /**
+   * Genera la tabla desplazamiento y la tabla con el índice del desplazamiento.
+   */
+  private void creaTablasDesplazamiento() {
+    generaDesplazamiento();
+    generaIndiceDesplazamiento();
+  }
+  
+  /**
+   * Genera la tabla con el índice del desplazamiento.
+   */
+  private void generaIndiceDesplazamiento() {
+    for (int i=0; i<desplazamiento.size(); i++)
+      indiceDesplazamiento.add((int)(Math.random()*255));
+  }
+
+  /**
+   * Limpia las tablas usados y numerosAleatorios.
+   */
+  private void limpiaTablas() {
+    usados.clear();
     numerosAleatorios.clear();
   }
   
@@ -97,7 +148,7 @@ public class Llave {
    * Asigna valores a las tablas que permiten la creación de la llave.
    * 
    * @param azar  Número (int) generado aleatoriamente.
-   * @param i Posición
+   * @param i     Posición dentro de la tabla a crear.
    */
   private void asignaValoresTablas(int azar, int i) {
     usados.set(azar, true);
@@ -108,8 +159,8 @@ public class Llave {
   /**
    * Crea los caracteres con sus respectivos valores original y cifrado.
    * 
-   * @param azar Número (int) generado aleatoriamente.
-   * @param i Posición
+   * @param azar  Número (int) generado aleatoriamente.
+   * @param i     Posición dentro de la tabla a crear.
    */
   private void creaCaracteres(int azar, int i) {
     tablaOriginal.add(new Caracteres(azar));
@@ -136,33 +187,34 @@ public class Llave {
    * Genera la tabla con los desplazamientos que será utilizados para cifrar/descifrar los mensajes.
    */
   private void generaDesplazamiento() {
-    int azar = (int)(Math.random()*(int)(Caracteres.getLongitud()/2)+1986);
-    for (int i=0; i<azar; i++) {
+    for (int i=0; i<1531; i++) 
       desplazamiento.add((int)(Math.random()*(tablaCifrada.size()-1)+1));
-    }
   }  
   
   /**
    * Genera el nombre de la llave.
    * 
-   * @return
+   * @return  Nombre (String) de la llave.
    */
   private String generaNombre() {
     String nombre = "|***|";
-    nombre = creaCabeceraA(nombre); 
-    nombre = creaCabeceraB(nombre);   
-    nombre = creaCuerpo(nombre);    
+    nombre = creaCuerpoA(nombre); 
+    nombre = creaCuerpoB(nombre);   
+    nombre = creaCuerpoC(nombre);
+    nombre = creaCuerpoD(nombre); 
+    nombre = creaCuerpoE(nombre); 
+    nombre = creaCuerpoF(nombre); 
     return nombre;
   }
   
   /**
-   * Al generar el nombre guarda la primera parte de la información de la llave.
+   * Al generar el nombre guarda la información de la tabla "tablaOriginal".
    * 
-   * @param nombre
-   * @return
+   * @param nombre  Valor inicial del nombre de la llave.
+   * @return        Nombre de la llave con la primera sección del cuerpo, la tabla "tablaOriginal"
    */
-  private String creaCabeceraA(String nombre) {
-    for (int i=0; i<numerosAleatorios.size(); i++) {                    //Cabecera A 
+  private String creaCuerpoA(String nombre) {
+    for (int i=0; i<numerosAleatorios.size(); i++) {
       nombre += Matematicas.conversionHexa(numerosAleatorios.get(i));      
       nombre += (i!=numerosAleatorios.size()-1) ? "|" : "\n|*-*|";
     }
@@ -170,13 +222,13 @@ public class Llave {
   }
   
   /**
-   * Al generar el nombre guarda la segunda parte de la información de la llave.
+   * Al generar el nombre guarda la información de la tabla "tablaCifrada".
    * 
-   * @param nombre
-   * @return
+   * @param nombre  Valor inicial del nombre de la llave.
+   * @return        Nombre de la llave con la segunda sección del cuerpo, la tabla "tablaCifrada"
    */
-  private String creaCabeceraB(String nombre) {
-    for (int i=0; i<tablaCifrada.size(); i++) {                         //Cabecera B 
+  private String creaCuerpoB(String nombre) {
+    for (int i=0; i<tablaCifrada.size(); i++) {
       nombre += Matematicas.conversionHexa((tablaCifrada.get(i)).getValor());      
       nombre += (i!=tablaCifrada.size()-1) ? "|" : "\n|-*-|";
     }
@@ -184,18 +236,60 @@ public class Llave {
   }
   
   /**
-   * Al generar el nombre guarda la tercera parte de la información de la llave.
+   * Al generar el nombre guarda la información de la tabla "desplazamiento".
    * 
-   * @param nombre
-   * @return
+   * @param nombre  Valor inicial del nombre de la llave.
+   * @return        Nombre de la llave con la tercera sección del cuerpo, la tabla "desplazamiento"
    */
-  private String creaCuerpo(String nombre) {
-    for (int i=0; i<desplazamiento.size(); i++) {                       //Cuerpo
+  private String creaCuerpoC(String nombre) {
+    for (int i=0; i<desplazamiento.size(); i++) {
       nombre += Matematicas.conversionHexa(desplazamiento.get(i));      
-      nombre += (i!=desplazamiento.size()-1) ? ":" : "";
+      nombre += (i!=desplazamiento.size()-1) ? ":" : "\n|-*_|";
     }
     return nombre;
   }
+  
+  /**
+   * Al generar el nombre guarda la información de la tabla "indiceDesplazamiento".
+   * 
+   * @param nombre  Valor inicial del nombre de la llave.
+   * @return        Nombre de la llave con la cuarta sección del cuerpo, la tabla "indiceDesplazamiento".
+   */
+  private String creaCuerpoD(String nombre) {
+    for (int i=0; i<indiceDesplazamiento.size(); i++) {
+      nombre += Matematicas.conversionHexa(indiceDesplazamiento.get(i));      
+      nombre += (i!=indiceDesplazamiento.size()-1) ? ":" : "\n|_*-|";
+    }
+    return nombre;
+  }
+  
+  /**
+   * Al generar el nombre guarda la información de la tabla "operacion".
+   * 
+   * @param nombre  Valor inicial del nombre de la llave.
+   * @return        Nombre de la llave con la quinta sección del cuerpo, la tabla "operacion".
+   */
+  private String creaCuerpoE(String nombre) {
+    for (int i=0; i<operacion.size(); i++) {
+      nombre += String.valueOf((operacion.get(i)));      
+      nombre += (i!=indiceDesplazamiento.size()-1) ? "" : "\n|_*_|";
+    }
+    return nombre;
+  }
+  
+  /**
+   * Al generar el nombre guarda la información de la tabla "caseCaracter".
+   * 
+   * @param nombre  Valor inicial del nombre de la llave.
+   * @return        Nombre de la llave con la quinta sección del cuerpo, la tabla "caseCaracter".
+   */
+  private String creaCuerpoF(String nombre) {
+    for (int i=0; i<caseCaracter.size(); i++) {
+      nombre += String.valueOf((caseCaracter.get(i)));
+    }
+    return nombre;
+  }
+  
   
   //#################################     IMPORTAR LLAVE     #################################\\
   
@@ -203,9 +297,9 @@ public class Llave {
   /**
    * Constructor para importar una llave
    *  
-   * @throws IOException Se lanza esta excepción cuando no se pueda leer el fichero.
+   * @throws IOException            Se lanza esta excepción cuando no se pueda leer el fichero.
    * @throws versionLlaveIncorrecta Se lanza esta excepción cuando la versión de la llave a importa no coincide con la versión del programa.
-   * @throws cabeceraInvalida 
+   * @throws cabeceraInvalida       Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
    */
   public Llave(String ruta) throws IOException, versionLlaveIncorrecta, cabeceraInvalida {
     importaLlave(ruta);
@@ -214,9 +308,9 @@ public class Llave {
   /**
    * Importa la llave desde un fichero.
    * 
-   * @throws IOException Se lanza esta excepción cuando no se pueda leer el fichero.
+   * @throws IOException            Se lanza esta excepción cuando no se pueda leer el fichero.
    * @throws versionLlaveIncorrecta Se lanza esta excepción cuando la versión de la llave a importar no coincide con la versión del programa.
-   * @throws cabeceraInvalida 
+   * @throws cabeceraInvalida       Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
    * 
    */
   private void importaLlave(String ruta) throws IOException, versionLlaveIncorrecta, cabeceraInvalida { 
@@ -228,7 +322,7 @@ public class Llave {
   /**
    * Lee el fichero con la información de la llave que se desea importar.
    * 
-   * @throws IOException Se lanza esta excepción cuando no se pueda leer el fichero.
+   * @throws IOException            Se lanza esta excepción cuando no se pueda leer el fichero.
    * @throws versionLlaveIncorrecta Se lanza esta excepción cuando la versión de la llave a importar no coincide con la versión del programa.
    * 
    */
@@ -240,14 +334,26 @@ public class Llave {
   /**
    * Crea la llave que se desea importar.
    * 
-   * @throws cabeceraInvalida 
+   * @throws cabeceraInvalida Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
    */
   private void creaLlave() throws cabeceraInvalida {
-    importaCabeceraA();
-    importaCabeceraB();
-    importaCuerpo();
+    importaCuerpoLlave();
     nombreLlave = generaNombreImportado();
     informacion.clear();
+  }
+
+  /**
+   * Importa las 6 partes que componen el cuerpo de una llave.
+   * 
+   * @throws cabeceraInvalida Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
+   */
+  private void importaCuerpoLlave() throws cabeceraInvalida {
+    importaCuerpoA();
+    importaCuerpoB();
+    importaCuerpoC();
+    importaCuerpoD();
+    importaCuerpoE();
+    importaCuerpoF();
   }
   
   /**
@@ -256,11 +362,11 @@ public class Llave {
    * @return  Nombre de la llave (String).
    */
   private String generaNombreImportado() {
-    return informacion.get(0)+"\n"+informacion.get(1)+"\n"+informacion.get(2);
+    return informacion.get(0)+"\n"+informacion.get(1)+"\n"+informacion.get(2)+"\n"+informacion.get(3)+"\n"+informacion.get(4)+"\n"+informacion.get(5);
   }
   
   /**
-   * Valida que la cabecera de la cabecera A de la llave a importar sea correcta
+   * Valida que la cabecera del cuerpo A de la llave a importar sea correcta
    * 
    * @return true si es correcto, false si no lo es.
    */
@@ -274,9 +380,9 @@ public class Llave {
   /**
    * Importa los valores de la primera parte de la llave.
    * 
-   * @throws cabeceraInvalida 
+   * @throws cabeceraInvalida Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
    */
-  private void importaCabeceraA() throws cabeceraInvalida {
+  private void importaCuerpoA() throws cabeceraInvalida {
     if (!validaCabeceraA())
       throw new cabeceraInvalida();
     int k = 0; 
@@ -290,7 +396,7 @@ public class Llave {
   }
   
   /**
-   * Valida que la cabecera de la cabecera B de la llave a importar sea correcta
+   * Valida que la cabecera del cuerpo B de la llave a importar sea correcta
    * 
    * @return  true si es correcto, false si no lo es.
    */
@@ -303,9 +409,9 @@ public class Llave {
   /**
    * Importa los valores de la segunda parte de la llave.
    * 
-   * @throws cabeceraInvalida 
+   * @throws cabeceraInvalida Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
    */
-  private void importaCabeceraB() throws cabeceraInvalida {
+  private void importaCuerpoB() throws cabeceraInvalida {
     if (!validacabeceraB())
       throw new cabeceraInvalida();
     int k = 0;
@@ -316,11 +422,11 @@ public class Llave {
   }
   
   /**
-   * Valida que la cabecera del cuerpo de la llave a importar sea correcto
+   * Valida que la cabecera del cuerpo C de la llave a importar sea correcto
    * 
    * @return  true si es correcto, false si no lo es.
    */
-  private boolean validaCuerpo() {
+  private boolean validaCabeceraC() {
     if (informacion.get(2).substring(0, 5).equals("|-*-|"))
       return true;
     return false;
@@ -329,13 +435,85 @@ public class Llave {
   /**
    * Importa los valores de la tercera parte de la llave.
    * 
-   * @throws cabeceraInvalida 
+   * @throws cabeceraInvalida Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
    */
-  private void importaCuerpo() throws cabeceraInvalida {
-    if (!validaCuerpo())
+  private void importaCuerpoC() throws cabeceraInvalida {
+    if (!validaCabeceraC())
       throw new cabeceraInvalida();
     for (int i=5; i<informacion.get(2).length(); i+=3) {
       desplazamiento.add(Matematicas.hexaADecimal(informacion.get(2).substring(i, i+2)));
+    }
+  }
+  
+  /**
+   * Valida que la cabecera del cuerpo D de la llave a importar sea correcto
+   * 
+   * @return  true si es correcto, false si no lo es.
+   */
+  private boolean validaCabeceraD() {
+    if (informacion.get(3).substring(0, 5).equals("|-*_|"))
+      return true;
+    return false;
+  }
+  
+  /**
+   * Importa los valores de la cuarta parte de la llave.
+   * 
+   * @throws cabeceraInvalida Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
+   */
+  private void importaCuerpoD() throws cabeceraInvalida {
+    if (!validaCabeceraD())
+      throw new cabeceraInvalida();
+    for (int i=5; i<informacion.get(3).length(); i+=3) {
+      indiceDesplazamiento.add(Matematicas.hexaADecimal(informacion.get(3).substring(i, i+2)));
+    }
+  }
+  
+  /**
+   * Valida que la cabecera del cuerpo E de la llave a importar sea correcto
+   * 
+   * @return  true si es correcto, false si no lo es.
+   */
+  private boolean validaCabeceraE() {
+    if (informacion.get(4).substring(0, 5).equals("|_*-|"))
+      return true;
+    return false;
+  }
+  
+  /**
+   * Importa los valores de la quinta parte de la llave.
+   * 
+   * @throws cabeceraInvalida Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
+   */
+  private void importaCuerpoE() throws cabeceraInvalida {
+    if (!validaCabeceraE())
+      throw new cabeceraInvalida();
+    for (int i=5; i<informacion.get(4).length(); i++) {
+      operacion.add(Integer.parseInt(informacion.get(4).substring(i, i+1)));
+    }
+  }
+  
+  /**
+   * Valida que la cabecera del cuerpo de la llave a importar sea correcto
+   * 
+   * @return  true si es correcto, false si no lo es.
+   */
+  private boolean validaCabeceraF() {
+    if (informacion.get(5).substring(0, 5).equals("|_*_|"))
+      return true;
+    return false;
+  }
+  
+  /**
+   * Importa los valores de la sexta parte de la llave.
+   * 
+   * @throws cabeceraInvalida Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
+   */
+  private void importaCuerpoF() throws cabeceraInvalida {
+    if (!validaCabeceraF())
+      throw new cabeceraInvalida();
+    for (int i=5; i<informacion.get(5).length(); i++) {
+      caseCaracter.add(Integer.parseInt(informacion.get(5).substring(i, i+1)));
     }
   }
   
@@ -345,7 +523,7 @@ public class Llave {
    * @throws IOException Se lanza esta excepción cuando no se pueda leer el fichero.
    */
   private void guardaDatos() throws IOException {
-    for (int i=1; i<4; i++) {
+    for (int i=1; i<7; i++) {
       linea = r.readUTF();
       informacion.add(linea.replaceAll("\n", ""));
     }
@@ -355,7 +533,7 @@ public class Llave {
   /**
    * Valida que la versión de la llave que se desea importar sea la correcta.
    * 
-   * @throws IOException Se lanza esta excepción cuando no se pueda leer el fichero.
+   * @throws IOException            Se lanza esta excepción cuando no se pueda leer el fichero.
    * @throws versionLlaveIncorrecta Se lanza esta excepción cuando la versión de la llave a importar no coincide con la versión del programa.
    */
   private void validaVersionLlave() throws IOException, versionLlaveIncorrecta {
@@ -396,9 +574,12 @@ public class Llave {
    */
   private void almacenaDatos() {
     almacenaVersion();
-    almacenaCabeceraA();
-    almacenaCabeceraB();
-    almacenaCuerpo();
+    almacenaCuerpoA();
+    almacenaCuerpoB();
+    almacenaCuerpoC();
+    almacenaCuerpoD();
+    almacenaCuerpoE();
+    almacenaCuerpoF();
   }
   
   /**
@@ -409,9 +590,9 @@ public class Llave {
   }
   
   /**
-   * Almacena la cabecera A de la llave a exportar.
+   * Almacena el cuerpo A de la llave a exportar.
    */
-  private void almacenaCabeceraA() {
+  private void almacenaCuerpoA() {
     linea="|***|";
     for (int i=0; i<tablaOriginal.size(); i++)
       linea+=(i!=tablaOriginal.size()-1) ? (Matematicas.conversionHexa(tablaOriginal.get(i).getPosicionCaracter(tablaOriginal.get(i).getCaracter()))+"|") : 
@@ -420,9 +601,9 @@ public class Llave {
   }
   
   /**
-   * Almacena la cabecera B de la llave a exportar.
+   * Almacena el cuerpo B de la llave a exportar.
    */
-  private void almacenaCabeceraB() {
+  private void almacenaCuerpoB() {
     linea="|*-*|";
     for (int i=0; i<tablaCifrada.size(); i++)
       linea+=(i!=tablaCifrada.size()-1) ? (Matematicas.conversionHexa(tablaCifrada.get(i).getValor())+"|") : 
@@ -431,13 +612,44 @@ public class Llave {
   }
   
   /**
-   * Almacena el cuerpo de la llave a exportar.
+   * Almacena el cuerpo C de la llave a exportar.
    */
-  private void almacenaCuerpo() {
+  private void almacenaCuerpoC() {
     linea="|-*-|";
     for (int i=0; i<desplazamiento.size(); i++)
       linea+=(i!=desplazamiento.size()-1) ? (Matematicas.conversionHexa(desplazamiento.get(i))+":") : 
         (Matematicas.conversionHexa(desplazamiento.get(i)));
+    informacion.add(linea);
+  }
+  
+  /**
+   * Almacena el cuerpo D de la llave a exportar.
+   */
+  private void almacenaCuerpoD() {
+    linea="|-*_|";
+    for (int i=0; i<indiceDesplazamiento.size(); i++)
+      linea+=(i!=indiceDesplazamiento.size()-1) ? (Matematicas.conversionHexa(indiceDesplazamiento.get(i))+":") : 
+        (Matematicas.conversionHexa(indiceDesplazamiento.get(i)));
+    informacion.add(linea);
+  }
+  
+  /**
+   * Almacena el cuerpo E de la llave a exportar.
+   */
+  private void almacenaCuerpoE() {
+    linea="|_*-|";
+    for (int i=0; i<operacion.size(); i++)
+      linea+=String.valueOf(operacion.get(i));
+    informacion.add(linea);
+  }
+  
+  /**
+   * Almacena el cuerpo F de la llave a exportar.
+   */
+  private void almacenaCuerpoF() {
+    linea="|_*_|";
+    for (int i=0; i<caseCaracter.size(); i++)
+      linea+=String.valueOf(caseCaracter.get(i));
     informacion.add(linea);
   }
   
@@ -447,8 +659,8 @@ public class Llave {
    * @throws IOException Se lanza esta excepción cuando no se pueda crear el fichero.
    */
   private void guardaFichero() throws IOException {
-    for (int i=0; i<4; i++) {
-      if (i!=3)
+    for (int i=0; i<7; i++) {
+      if (i!=6)
         w.writeUTF(informacion.get(i)+"\n");
       else
         w.writeUTF(informacion.get(i));
@@ -461,7 +673,7 @@ public class Llave {
    * 
    * @param ruta  Ruta y nombre del fichero que contendrá la información de la llave exportar.
    * 
-   * @throws FileNotFoundException 
+   * @throws      FileNotFoundException 
    */
   private void creaEscritor(String ruta) throws FileNotFoundException {
     w = new DataOutputStream(new FileOutputStream(ruta+".kyph"));
@@ -483,7 +695,7 @@ public class Llave {
    * Devuelve el desplazamiento (ajustado) según el índice pasado como parámetro.
    * 
    * @param indice  Índice de la posición dentro de la tabla desplazamiento.
-   * @return  Devuelve el valor ajustado del desplazamiento (int).
+   * @return        Devuelve el valor ajustado del desplazamiento (int).
    */
   public int getDesplazamiento(int indice) {
     if (indice>=this.desplazamiento.size()) {
@@ -496,8 +708,8 @@ public class Llave {
   /**
    * Devuelve el caracter cifrado cuyo valor ha sido pasado como parámetro.
    * 
-   * @param valor Valor del caracter cifrado.
-   * @return  Caracter cifrado (String).
+   * @param valor   Valor del caracter cifrado.
+   * @return        Caracter cifrado (String).
    */
   public String getCaracterCifrado(int valor) {
     for (int i=0; i<this.tablaCifrada.size();i++) {
@@ -510,8 +722,8 @@ public class Llave {
   /**
    * Devuelve el caracter original cuyo valor ha sido pasado como parámetro.
    * 
-   * @param valor Valor del caracter original.
-   * @return  Caracter original (String).
+   * @param valor   Valor del caracter original.
+   * @return        Caracter original (String).
    */
   public String getCaracterOriginal(int valor) {
     for (int i=0; i<this.tablaOriginal.size();i++) {
@@ -525,7 +737,7 @@ public class Llave {
    * Devuelve el valor del caracter cifrado cuyo índice pasamos como parámetro.
    * 
    * @param indice  Índice del caracter a buscar
-   * @return  Devuelve el valor cifrado del caracter encontrado (int).
+   * @return        Devuelve el valor cifrado del caracter encontrado (int).
    */
   public int getValorCifrado(int indice) {
     return (this.tablaCifrada.get(indice)).getValor();
@@ -535,7 +747,7 @@ public class Llave {
    * Devuelve el valor del caracter original cuyo índice pasamos como parámetro.
    * 
    * @param indice  Índice del caracter a buscar
-   * @return  Devuelve el valor original del caracter encontrado (int).
+   * @return        Devuelve el valor original del caracter encontrado (int).
    */
   public int getValorOriginal(int indice) {
     return (this.tablaOriginal.get(indice)).getValor();
@@ -557,6 +769,43 @@ public class Llave {
    */
   public int getLongitudDesplazamiento() {
     return this.desplazamiento.size();
+  }
+  
+  /**
+   * Devuelve el índice del desplazamiento almacenado en la posición pasada
+   * por parámetro.
+   * 
+   * @param i
+   * @return
+   */
+  public int getIndiceDesplazamiento(int i) {
+    return this.indiceDesplazamiento.get(i);
+  }
+  
+  /**
+   * Devuelve el valor en forma de (booleano) del contenido de la tabla
+   * operacion en la posición pasada por parámetro.
+   * 
+   * @param i
+   * @return
+   */
+  public boolean getOperacion(int i) {
+    if (operacion.get(i%=operacion.size())==1) //i%=operacion.size())==1
+      return true;
+    return false;
+  }
+  
+  /**
+   * Devuelve el valor en forma de (booleano) del contenido de la tabla
+   * duplicador en la posición pasada por parámetro.
+   * 
+   * @param i
+   * @return
+   */
+  public boolean getCaseCaracter(int i) {
+    if (caseCaracter.get(i%=caseCaracter.size())==1) //i%=caseCaracter.size())==1
+      return true;
+    return false;
   }
   
   /**

@@ -210,20 +210,11 @@ public class Texto {
     }
     w.close();
   }
-
-//  /**
-//   * 
-//   */
-//  private static void reseteaValores() {
-//    salida="";
-//    entradaTexto.clear();
-//  }
   
 //public static void deSalidaAEntrada() {
 //entradaTexto.clear();
 //for (int i=0; i<salidaTexto.size(); i++) 
 //  entradaTexto.add(salidaTexto.get(i));
 //}
-  
   
 }
