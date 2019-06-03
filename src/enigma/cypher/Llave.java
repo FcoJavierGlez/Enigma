@@ -56,7 +56,6 @@ public class Llave {
   private void generaLlave() {
     generarUsados();
     crearTablas();
-    //reiniciaUsados();
     creaTablasDesplazamiento();
     creaTablasBinarias();
     nombreLlave = generaNombre();
@@ -76,7 +75,7 @@ public class Llave {
    */
   private void creaTablaCase() {
     for (int i=0; i<desplazamiento.size(); i++)
-      caseCaracter.add(((int)(Math.random()*2)==1) ? true : false);
+      caseCaracter.add(((int)(Math.random()*2)==1));
   }
   
   /**
@@ -84,7 +83,7 @@ public class Llave {
    */
   private void creaTablaOperacion() {
     for (int i=0; i<desplazamiento.size(); i++)
-      operacion.add(((int)(Math.random()*2)==1) ? true : false);
+      operacion.add(((int)(Math.random()*2)==1));
   }
 
   /**
@@ -792,7 +791,7 @@ public class Llave {
    * @return
    */
   public boolean getOperacion(int i) {
-    return (operacion.get(i%=operacion.size())); //i%=operacion.size())==1
+    return (operacion.get(i%=operacion.size()));
   }
   
   /**
@@ -803,7 +802,7 @@ public class Llave {
    * @return
    */
   public boolean getCaseCaracter(int i) {
-    return (caseCaracter.get(i%=caseCaracter.size())); //i%=caseCaracter.size())==1
+    return (caseCaracter.get(i%=caseCaracter.size()));
   }
   
   /**
