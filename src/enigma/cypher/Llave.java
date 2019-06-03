@@ -32,7 +32,7 @@ public class Llave {
   private ArrayList<Integer> caseCaracter = new ArrayList<Integer>();         //Tabla con los índices de los desplazamientos.
   private String nombreLlave;
   
-  //Variables para importar llaves:
+  //Variables para importar/exportar llaves:
   private static DataInputStream r;
   private static DataOutputStream w;
   private static String linea;

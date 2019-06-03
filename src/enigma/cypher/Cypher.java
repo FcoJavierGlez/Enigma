@@ -17,7 +17,7 @@ public class Cypher {
   private Llave llaveSeleccionada;
   
   
-  //#################################     CONSTRUCTORES   #################################\\  
+  //#################################     CONSTRUCTORES     #################################\\  
   
   /**
    * Constructor
@@ -25,7 +25,7 @@ public class Cypher {
   public Cypher() {}
   
   
-  //#################################     GETTERS   #################################\\
+  //#################################     GETTERS     #################################\\
   
   /**
    * Muestra el número de llaves almacenadas en Cypher.
@@ -37,7 +37,7 @@ public class Cypher {
   }
   
   
-  //#################################     GESTIÓN DE LLAVES   #################################\\
+  //#################################     GESTIÓN DE LLAVES     #################################\\
   
   /**
    * Crea una nueva llave.
@@ -107,19 +107,26 @@ public class Cypher {
   }
   
   
-  //#################################     ENCRIPTAR   #################################\\
+  //#################################     ENCRIPTAR     #################################\\
 
   /**
    * 
    * Encripta el texto almacenado en la Clase Texto.
-   * 
-   * @param numLlave Número de llave (int) seleccionada
    * 
    * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
   public void encriptaTexto() throws ErrorSeleccionLlave{
     compruebaLlave();
     Texto.borraSalida();
+    procesoEncriptado();
+  }
+
+
+  /**
+   * Proceso mediante el cual se encripta el texto almacenado
+   * en la tabla entradaTexto de la Clase Texto.
+   */
+  private void procesoEncriptado() {
     for (int i=0; i<Texto.getTamannoEntrada(); i++) { //Selecciona una línea de entrada de Texto
       salida = "";
       for (int j=0; j<Texto.getLineaEntrada(i).length(); j++)  //Encripta todos los caracteres de la línea
@@ -143,25 +150,47 @@ public class Cypher {
    * Asigna un valor cifrado correspondiente al caracter de la posición "i".
    * 
    * Si "i" = "0" o el valor de operacion[i]!=operacion[i-1] se sigue el siguiente patrón:
-   * <ol><li>En caso de que operacion[i]==1 se suma el desplazamiento, pero en caso de valer 0 se resta.</li></ol>
+   * <ul><li>En caso de que operacion[i]==1 se suma el desplazamiento, pero en caso de valer 0 se resta.</li></ul>
    * Si operacion[i]==operacion[i-1] se invierte el patrón anterior:
-   * <ol><li>En caso de que operacion[i]==1 se resta el desplazamiento, pero en caso de valer 0 se suma.</li></ol>
+   * <ul><li>En caso de que operacion[i]==1 se resta el desplazamiento, pero en caso de valer 0 se suma.</li></ul>
    * 
    * @param linea  Línea (String) que se desea cifrar
    * @param i      Variable de control que selecciona la posición del caracter dentro de la línea a cifrar.
    * @return       Devuelve el valor del caracter cifrado
    */
   private int asignaValorCifrado(String linea, int i) {   //PENDIENTE DE TESTEAR, AL FINAL DEL CÓDIGO ESTÁ EL MÉTODO ANTERIOR A ÉSTE
-    if (ajustaValorPosicion(i)==0 || llaveSeleccionada.getOperacion(ajustaValorPosicion(i))!=llaveSeleccionada.getOperacion(ajustaValorPosicion(i)-1))
-      return (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) ? (buscaValorOriginal(linea.substring(i, i+1)) + llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i)))) 
-          : (buscaValorOriginal(linea.substring(i, i+1)) - llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))));
-    else
-      return (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) ? (buscaValorOriginal(linea.substring(i, i+1)) - llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i)))) 
-          : (buscaValorOriginal(linea.substring(i, i+1)) + llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))));
+    return (ajustaValorPosicion(i)==0 || llaveSeleccionada.getOperacion(ajustaValorPosicion(i))!=llaveSeleccionada.getOperacion(ajustaValorPosicion(i)-1))
+        ? (valorCifradoNormal(linea, i)) : (valorCifradoInverso(linea, i));
+  }
+  
+  /**
+   * Si "i" = "0" o el valor de operacion[i]!=operacion[i-1] se sigue el siguiente patrón:
+   * <ul><li>En caso de que operacion[i]==1 se suma el desplazamiento, pero en caso de valer 0 se resta.</li></ul>
+   * 
+   * @param linea Entrada de la línea a cifrar (necesaria para buscar el valor del caracter original que se desea cifrar).
+   * @param i     Posición actual del caracter a buscar y de las tablas de cifrado/descifrado.
+   * @return      Valor del caracter original.
+   */
+  private int valorCifradoNormal(String linea, int i) {
+    return (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) ? (buscaValorOriginal(linea.substring(i, i+1)) + llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i)))) 
+        : (buscaValorOriginal(linea.substring(i, i+1)) - llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))));
+  }
+  
+  /**
+   * Si operacion[i]==operacion[i-1] se invierte el patrón anterior:
+   * <ul><li>En caso de que operacion[i]==1 se resta el desplazamiento, pero en caso de valer 0 se suma.</li></ul>
+   * 
+   * @param linea Entrada de la línea a cifrar (necesaria para buscar el valor del caracter original que se desea cifrar).
+   * @param i     Posición actual del caracter a buscar y de las tablas de cifrado/descifrado.
+   * @return      Valor del caracter original.
+   */
+  private int valorCifradoInverso(String linea, int i) {
+    return (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) ? (buscaValorOriginal(linea.substring(i, i+1)) - llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i)))) 
+        : (buscaValorOriginal(linea.substring(i, i+1)) + llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))));
   }
   
   
-  //#################################     DESENCRIPTAR   #################################\\
+  //#################################     DESENCRIPTAR     #################################\\
   
   /**
    * Desencripta el texto almacenado en la Clase Texto.
@@ -171,6 +200,15 @@ public class Cypher {
   public void desencriptaTexto() throws ErrorSeleccionLlave {
     compruebaLlave();
     Texto.borraSalida();
+    procesoDesencriptado();
+  }
+
+
+  /**
+   * Proceso mediante el cual se desencripta el texto almacenado
+   * en la tabla entradaTexto de la Clase Texto. 
+   */
+  private void procesoDesencriptado() {
     for (int i=0; i<Texto.getTamannoEntrada(); i++) { //Selecciona una línea de entrada de Texto
       salida = "";
       for (int j=0; j<Texto.getLineaEntrada(i).length(); j++) //Desencripta todos los caracteres de la línea
@@ -194,27 +232,52 @@ public class Cypher {
    * Asigna un valor descifrado correspondiente al caracter de la posición "i".
    * 
    * Si "i" = "0" o el valor de operacion[i]!=operacion[i-1] se sigue el siguiente patrón:
-   * <ol><li>En caso de que operacion[i]==1 se resta el desplazamiento, pero en caso de valer 0 se suma.</li></ol>
+   * <ul><li>En caso de que operacion[i]==1 se resta el desplazamiento, pero en caso de valer 0 se suma.</li></ul>
    * Si operacion[i]==operacion[i-1] se invierte el patrón anterior:
-   * <ol><li>En caso de que operacion[i]==1 se suma el desplazamiento, pero en caso de valer 0 se resta.</li></ol>
+   * <ul><li>En caso de que operacion[i]==1 se suma el desplazamiento, pero en caso de valer 0 se resta.</li></ul>
    * 
    * Lo que se pretende con esto es contrarrestar el patrón del cifrado con lo que poder descifrar el texto.
    * 
    * @param linea    Línea (String) que se desea descifrar
-   * @param i        Variable de control que selecciona la posición del caracter dentro de la línea a descifrar.
+   * @param i        Variable de control que selecciona la posición del caracter dentro de la línea a descifrar y posición actual en las tablas de cifrado/descifrado.
    * @return         Devuelve el valor del caracter descifrado
    */
   private int asignaValorDescifrado(String linea, int i) {    //PENDIENTE DE TESTEAR, AL FINAL DEL CÓDIGO ESTÁ EL MÉTODO ANTERIOR A ÉSTE
-    if (ajustaValorPosicion(i)==0 || llaveSeleccionada.getOperacion(ajustaValorPosicion(i))!=llaveSeleccionada.getOperacion(ajustaValorPosicion(i)-1))
-      return (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) ? (buscaValorCifrado(invierteCaseCaracter(linea.substring(i, i+1), i)) - llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i)))) 
-          : (buscaValorCifrado(invierteCaseCaracter(linea.substring(i, i+1), i)) + llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))));
-    else
-      return (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) ? (buscaValorCifrado(invierteCaseCaracter(linea.substring(i, i+1), i)) + llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i)))) 
-          : (buscaValorCifrado(invierteCaseCaracter(linea.substring(i, i+1), i)) - llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))));
+    return (ajustaValorPosicion(i)==0 || llaveSeleccionada.getOperacion(ajustaValorPosicion(i))!=llaveSeleccionada.getOperacion(ajustaValorPosicion(i)-1)) 
+        ? (valorDescifradoNormal(linea, i)) : (valorDescifradoInverso(linea, i));
+  }
+  /**
+   * Si "i" = "0" o el valor de operacion[i]!=operacion[i-1] se sigue el siguiente patrón:
+   * <ul><li>En caso de que operacion[i]==1 se resta el desplazamiento, pero en caso de valer 0 se suma.</li></ul>
+   * 
+   * Lo que se pretende con esto es contrarrestar el patrón del cifrado con lo que poder descifrar el texto.
+   * 
+   * @param linea Entrada de la línea a descifrar (necesaria para buscar el valor del caracter cifrado que se desea descifrar).
+   * @param i     Posición actual del caracter a buscar y de las tablas de cifrado/descifrado.
+   * @return      Valor del caracter descifrado.
+   */
+  private int valorDescifradoNormal(String linea, int i) {
+    return (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) ? (buscaValorCifrado(invierteCaseCaracter(linea.substring(i, i+1), i)) - llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i)))) 
+        : (buscaValorCifrado(invierteCaseCaracter(linea.substring(i, i+1), i)) + llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))));
+  }
+  
+  /**
+   * Si operacion[i]==operacion[i-1] se invierte el patrón anterior:
+   * <ul><li>En caso de que operacion[i]==1 se suma el desplazamiento, pero en caso de valer 0 se resta.</li></ul>
+   * 
+   * Lo que se pretende con esto es contrarrestar el patrón del cifrado con lo que poder descifrar el texto.
+   * 
+   * @param linea Entrada de la línea a descifrar (necesaria para buscar el valor del caracter cifrado que se desea descifrar).
+   * @param i     Posición actual del caracter a buscar y de las tablas de cifrado/descifrado.
+   * @return      Valor del caracter descifrado.
+   */
+  private int valorDescifradoInverso(String linea, int i) {
+    return (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) ? (buscaValorCifrado(invierteCaseCaracter(linea.substring(i, i+1), i)) + llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i)))) 
+        : (buscaValorCifrado(invierteCaseCaracter(linea.substring(i, i+1), i)) - llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))));
   }
   
   
-  //#################################     ÚTILES   #################################\\
+  //#################################     ÚTILES     #################################\\
   
   /**
    * Si el valor cifrado o descifrado del caracter rebasa el índice de la tabla
@@ -318,8 +381,7 @@ public class Cypher {
    * @return         Devuelve el valor (int) del caracter encontrado en la tabla cifrada
    */
   private int buscaValorCifrado(String caracter) {
-    int indice = llaveSeleccionada.comparaCaracterCifrado(caracter);
-    return llaveSeleccionada.getValorCifrado(indice);
+    return llaveSeleccionada.getValorCifrado(llaveSeleccionada.comparaCaracterCifrado(caracter));
   }
   
   
@@ -344,14 +406,31 @@ public class Cypher {
    * @return  Índice (int) de la tabla desplazamiento.
    */
   private int indiceDesplazamiento(int i) {
-    if (llaveSeleccionada.getOperacion(i)) {
-      if (llaveSeleccionada.getCaseCaracter(i))
-        return (llaveSeleccionada.getIndiceDesplazamiento(i)%2==0) ? (llaveSeleccionada.getIndiceDesplazamiento(i)*4) : (llaveSeleccionada.getIndiceDesplazamiento(i)*6);
-      else
-        return (llaveSeleccionada.getIndiceDesplazamiento(i)%2==0) ? (llaveSeleccionada.getIndiceDesplazamiento(i)*2) : (llaveSeleccionada.getIndiceDesplazamiento(i)*3);
-    } else if (llaveSeleccionada.getCaseCaracter(i))
-      return (llaveSeleccionada.getIndiceDesplazamiento(i)%2==0) ? (llaveSeleccionada.getIndiceDesplazamiento(i)*2) : (llaveSeleccionada.getIndiceDesplazamiento(i)*3);
-    return llaveSeleccionada.getIndiceDesplazamiento(i);
+    if (llaveSeleccionada.getOperacion(i)) 
+      return (llaveSeleccionada.getCaseCaracter(i)) ? indiceMultiplicadoX2(i) : indiceMultiplicado(i);
+    return (llaveSeleccionada.getCaseCaracter(i)) ? indiceMultiplicado(i) : llaveSeleccionada.getIndiceDesplazamiento(i);
+  }
+  
+  /**
+   * Devuelve el valor del índice multiplicado x2 si el número del índice en la posición "i" es par
+   * o multiplicado x3 si el valor del índice en la posición "i" es impar.
+   * 
+   * @param i Posición en la tabla indiceDesplazamiento.
+   * @return  Valor del índice x2 si el índice es un número par, x3 si es un número impar.
+   */
+  private int indiceMultiplicado(int i) {
+    return (llaveSeleccionada.getIndiceDesplazamiento(i)%2==0) ? (llaveSeleccionada.getIndiceDesplazamiento(i)*2) : (llaveSeleccionada.getIndiceDesplazamiento(i)*3);
+  }
+  
+  /**
+   * Devuelve el valor del índice multiplicado x4 si el número del índice en la posición "i" es par
+   * o multiplicado x6 si el valor del índice en la posición "i" es impar.
+   * 
+   * @param i Posición en la tabla indiceDesplazamiento.
+   * @return  Valor del índice x4 si el índice es un número par, x6 si es un número impar.
+   */
+  private int indiceMultiplicadoX2(int i) {
+    return (llaveSeleccionada.getIndiceDesplazamiento(i)%2==0) ? (llaveSeleccionada.getIndiceDesplazamiento(i)*4) : (llaveSeleccionada.getIndiceDesplazamiento(i)*6);
   }
   
   /**
@@ -359,8 +438,12 @@ public class Cypher {
    * si la información de la llave determina que en la posición en la que se
    * encuentra dicho caracter coincide con que deba invertirse en esa posición.
    * 
-   * La inversión se deterina si en la posición i de la tabla caseCaracter
+   * La inversión se determina si en la posición i de la tabla caseCaracter
    * hay un 1, en caso de haber un 0 se retorna el caracter original de entrada.
+   * 
+   * Este proceso es un cambio individual, e independiente, al proceso de cambiar
+   * toda la cadena, de forma general, de mayúsculas a minúsculas y viceversa
+   * del proceso cambiaMayusMinus(String).
    * 
    * @param caracter  Caracter de entrada (String)
    * @param i         Posición actual, coincide con el caracter de entrada y con la tabla de caseCaracter.
@@ -373,12 +456,12 @@ public class Cypher {
   }
   
   
-  //#################################     TO STRING   #################################\\  
+  //#################################     TO STRING     #################################\\  
   
   /**
+   * Imprime el nombre de todas las llaves almacenadas en la tabla llaves.
    * 
-   * 
-   * @return
+   * @return  Cadena de caracteres con los nombres de todas las llaves almacenadas en la tabla llaves.
    */
   public String toString() {
     salida = "";
@@ -388,12 +471,12 @@ public class Cypher {
     return salida;
   }
   
-  //####################################   TABLAS TEST   ##############################################\\
+  //####################################   TABLAS TEST     ##############################################\\
   
   /**
    * Clase para tests, imprime por pantalla los valores de las tablas originales, cifrada y desplazamiento.
    * 
-   * @throws ErrorSeleccionLlave 
+   * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
   public void imprimeTablas() throws ErrorSeleccionLlave {
     compruebaLlave();
@@ -402,26 +485,28 @@ public class Cypher {
       System.out.print("     ||     " + llaveSeleccionada.getCaracterOriginal(i) + " valor cifrado: " + llaveSeleccionada.getValorCifrado(i) + "\n");
     }
     
-    System.out.println("Longitud tabla original: " + llaveSeleccionada.getTamanoTablaOriginal() + "total caracteres: " + Caracteres.getLongitud());
+    System.out.println("\nLongitud tabla original: " + llaveSeleccionada.getTamanoTablaOriginal() + " || total caracteres: " + Caracteres.getLongitud()+"\n");
     
     for (int i=0; i<llaveSeleccionada.getLongitudDesplazamiento();i++) {
       System.out.print("\nPosición " + i + ": " + llaveSeleccionada.getDesplazamiento(i));
     }
   }
   
-  //####################################   PRUEBAS   ##############################################\\
-  
+  //####################################     PRUEBAS     ##############################################\\
+  /*
+   * Los dos métodos que vienen a continuación eran los métodos originales de Cypher, ahora solo están para realizar pruebas, 
+   * serán sustituidos por los métodos nuevos que interactúan con la Clase Texto.
+   */
   /**
    * 
    * Encripta la línea pasada por parámetro
    * 
-   * @param numLlave Número de llave (int) seleccionada
    * @param linea    Línea (String) a cifrar.
    * @return         Devuelve (String) cifrado.
    * 
    * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
-  public String encripta(String linea) throws ErrorSeleccionLlave{
+  @Deprecated public String encripta(String linea) throws ErrorSeleccionLlave{
     compruebaLlave();
     salida = "";
     for (int i=0; i<linea.length();i++) {
@@ -433,12 +518,12 @@ public class Cypher {
   /**
    * Desencripta la línea pasada por parámetro
    * 
-   * @param linea
-   * @return
+   * @param linea    Línea (String) a descifrar.
+   * @return         Devuelve (String) descifrado.
    * 
    * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
-  public String desencripta(String linea) throws ErrorSeleccionLlave {
+  @Deprecated public String desencripta(String linea) throws ErrorSeleccionLlave {
     compruebaLlave();
     salida = "";
     for (int i=0; i<linea.length(); i++) {
