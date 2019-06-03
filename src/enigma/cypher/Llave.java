@@ -28,8 +28,8 @@ public class Llave {
   private ArrayList<Boolean> usados = new ArrayList<Boolean>();               //Tabla de valores booleanos del mismo tamaño que las tablas de caracteres
   private ArrayList<Integer> desplazamiento = new ArrayList<Integer>();       //Tabla con los desplazamientos de los caracteres del texto a cifrar.
   private ArrayList<Integer> indiceDesplazamiento = new ArrayList<Integer>(); //Tabla con los índices de los desplazamientos.
-  private ArrayList<Integer> operacion = new ArrayList<Integer>();            //Tabla con los valores de las operaciones.
-  private ArrayList<Integer> caseCaracter = new ArrayList<Integer>();         //Tabla con los índices de los desplazamientos.
+  private ArrayList<Boolean> operacion = new ArrayList<Boolean>();            //Tabla con los valores de las operaciones.
+  private ArrayList<Boolean> caseCaracter = new ArrayList<Boolean>();         //Tabla con los índices de los desplazamientos.
   private String nombreLlave;
   
   //Variables para importar/exportar llaves:
@@ -76,7 +76,7 @@ public class Llave {
    */
   private void creaTablaCase() {
     for (int i=0; i<desplazamiento.size(); i++)
-      caseCaracter.add((int)(Math.random()*2));
+      caseCaracter.add(((int)(Math.random()*2)==1) ? true : false);
   }
   
   /**
@@ -84,7 +84,7 @@ public class Llave {
    */
   private void creaTablaOperacion() {
     for (int i=0; i<desplazamiento.size(); i++)
-      operacion.add((int)(Math.random()*2));
+      operacion.add(((int)(Math.random()*2)==1) ? true : false);
   }
 
   /**
@@ -271,7 +271,7 @@ public class Llave {
    */
   private String creaCuerpoE(String nombre) {
     for (int i=0; i<operacion.size(); i++) {
-      nombre += String.valueOf((operacion.get(i)));      
+      nombre += String.valueOf((operacion.get(i)) ? "1" : "0");      
       nombre += (i!=indiceDesplazamiento.size()-1) ? "" : "\n|_*_|";
     }
     return nombre;
@@ -285,7 +285,7 @@ public class Llave {
    */
   private String creaCuerpoF(String nombre) {
     for (int i=0; i<caseCaracter.size(); i++) {
-      nombre += String.valueOf((caseCaracter.get(i)));
+      nombre += String.valueOf((caseCaracter.get(i))  ? "1" : "0");
     }
     return nombre;
   }
@@ -489,7 +489,7 @@ public class Llave {
     if (!validaCabeceraE())
       throw new cabeceraInvalida();
     for (int i=5; i<informacion.get(4).length(); i++) {
-      operacion.add(Integer.parseInt(informacion.get(4).substring(i, i+1)));
+      operacion.add((Integer.parseInt(informacion.get(4).substring(i, i+1))==1) ? true : false);
     }
   }
   
@@ -513,7 +513,7 @@ public class Llave {
     if (!validaCabeceraF())
       throw new cabeceraInvalida();
     for (int i=5; i<informacion.get(5).length(); i++) {
-      caseCaracter.add(Integer.parseInt(informacion.get(5).substring(i, i+1)));
+      caseCaracter.add((Integer.parseInt(informacion.get(5).substring(i, i+1))==1) ? true : false);
     }
   }
   
@@ -639,7 +639,8 @@ public class Llave {
   private void almacenaCuerpoE() {
     linea="|_*-|";
     for (int i=0; i<operacion.size(); i++)
-      linea+=String.valueOf(operacion.get(i));
+      linea+=(operacion.get(i)) ? "1" : "0";
+      //linea+=String.valueOf(operacion.get(i));
     informacion.add(linea);
   }
   
@@ -649,7 +650,8 @@ public class Llave {
   private void almacenaCuerpoF() {
     linea="|_*_|";
     for (int i=0; i<caseCaracter.size(); i++)
-      linea+=String.valueOf(caseCaracter.get(i));
+      linea+=(caseCaracter.get(i)) ? "1" : "0";
+      //linea+=String.valueOf(caseCaracter.get(i));
     informacion.add(linea);
   }
   
@@ -790,9 +792,7 @@ public class Llave {
    * @return
    */
   public boolean getOperacion(int i) {
-    if (operacion.get(i%=operacion.size())==1) //i%=operacion.size())==1
-      return true;
-    return false;
+    return (operacion.get(i%=operacion.size())); //i%=operacion.size())==1
   }
   
   /**
@@ -803,9 +803,7 @@ public class Llave {
    * @return
    */
   public boolean getCaseCaracter(int i) {
-    if (caseCaracter.get(i%=caseCaracter.size())==1) //i%=caseCaracter.size())==1
-      return true;
-    return false;
+    return (caseCaracter.get(i%=caseCaracter.size())); //i%=caseCaracter.size())==1
   }
   
   /**
