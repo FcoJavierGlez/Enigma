@@ -47,10 +47,7 @@ public class Texto {
   private static void eliminaSaltoLinea(String entrada) {
     for (int i=0; i<entrada.length(); i++) {
       if (entrada.substring(i, i+1).equals("\n")) {
-        if (i==0) 
-          entradaTexto.add("");
-        else
-          entradaTexto.add(entrada.substring(0, i));
+        entradaTexto.add((i==0) ? "" : entrada.substring(0, i));
         entrada=entrada.substring(i+1, entrada.length());
         i=-1;
       }
@@ -79,9 +76,21 @@ public class Texto {
    */
   public static String imprimeTexto() {
     salida="";
-    for (int i=0; i<salidaTexto.size();i++) {
-      salida+=salidaTexto.get(i)+"\n";
-    }
+    for (int i=0; i<salidaTexto.size();i++) 
+      salida+=(i!=salidaTexto.size()-1) ? salidaTexto.get(i)+"\n" : salidaTexto.get(i);
+    return salida;
+  }
+  
+  /**
+   * Devuelve en forma de cadena decaracteres el contenido de salidaTexto (el ArrayList
+   * con el texto que previamente haya sido cifrado/descifrado por la Clase Cypher).
+   * 
+   * @return  Texto en formato cadena de caracteres.
+   */
+  public static String imprimeEntrada() {
+    salida="";
+    for (int i=0; i<entradaTexto.size();i++)
+      salida+=(i!=entradaTexto.size()-1) ? entradaTexto.get(i)+"\n" : entradaTexto.get(i);
     return salida;
   }
   
@@ -205,10 +214,22 @@ public class Texto {
    */
   public static void exportaFichero(String rutaSalida) throws IOException {
     creaEscritor(rutaSalida);
-    for (int i=0; i<salidaTexto.size(); i++) {
-      w.write(salidaTexto.get(i)+"\n");
-    }
+    creaFichero();
     w.close();
+  }
+
+  /**
+   * Crea el fichero guardando línea a línea el contenido a exportar.
+   * 
+   * @throws IOException  Excepción si no se encuentra el fichero.
+   */
+  private static void creaFichero() throws IOException {
+    for (int i=0; i<salidaTexto.size(); i++) {
+      if (i==salidaTexto.size()-1)
+        w.write(salidaTexto.get(i));
+      else
+        w.write(salidaTexto.get(i)+"\n");
+    }
   }
   
 //public static void deSalidaAEntrada() {

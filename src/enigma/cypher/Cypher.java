@@ -60,7 +60,7 @@ public class Cypher {
   }
   
   /**
-   * Importa una llave ya creada.
+   * Exporta una llave ya creada.
    * 
    * @param ruta  Ruta y nombre donde se va a expotar la llave.
    * 
@@ -101,7 +101,7 @@ public class Cypher {
    * 
    * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
-  private void compruebaLlave() throws ErrorSeleccionLlave{
+  private void compruebaLlave() throws ErrorSeleccionLlave {
     if (llaveSeleccionada==null)
       throw new ErrorSeleccionLlave();
   }
@@ -115,7 +115,7 @@ public class Cypher {
    * 
    * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
-  public void encriptaTexto() throws ErrorSeleccionLlave{
+  public void encriptaTexto() throws ErrorSeleccionLlave {
     compruebaLlave();
     Texto.borraSalida();
     procesoEncriptado();
@@ -150,9 +150,9 @@ public class Cypher {
    * Asigna un valor cifrado correspondiente al caracter de la posición "i".
    * 
    * Si "i" = "0" o el valor de operacion[i]!=operacion[i-1] se sigue el siguiente patrón:
-   * <ul><li>En caso de que operacion[i]==1 se suma el desplazamiento, pero en caso de valer 0 se resta.</li></ul>
+   * <ul><li>En caso de que operacion[i]==true se suma el desplazamiento, pero en caso de ser false se resta.</li></ul>
    * Si operacion[i]==operacion[i-1] se invierte el patrón anterior:
-   * <ul><li>En caso de que operacion[i]==1 se resta el desplazamiento, pero en caso de valer 0 se suma.</li></ul>
+   * <ul><li>En caso de que operacion[i]==true se resta el desplazamiento, pero en caso de ser false 0 se suma.</li></ul>
    * 
    * @param linea  Línea (String) que se desea cifrar
    * @param i      Variable de control que selecciona la posición del caracter dentro de la línea a cifrar.
@@ -165,7 +165,7 @@ public class Cypher {
   
   /**
    * Si "i" = "0" o el valor de operacion[i]!=operacion[i-1] se sigue el siguiente patrón:
-   * <ul><li>En caso de que operacion[i]==1 se suma el desplazamiento, pero en caso de valer 0 se resta.</li></ul>
+   * <ul><li>En caso de que operacion[i]==true se suma el desplazamiento, pero en caso de ser false se resta.</li></ul>
    * 
    * @param linea Entrada de la línea a cifrar (necesaria para buscar el valor del caracter original que se desea cifrar).
    * @param i     Posición actual del caracter a buscar y de las tablas de cifrado/descifrado.
@@ -178,7 +178,7 @@ public class Cypher {
   
   /**
    * Si operacion[i]==operacion[i-1] se invierte el patrón anterior:
-   * <ul><li>En caso de que operacion[i]==1 se resta el desplazamiento, pero en caso de valer 0 se suma.</li></ul>
+   * <ul><li>En caso de que operacion[i]==true se resta el desplazamiento, pero en caso de ser false 0 se suma.</li></ul>
    * 
    * @param linea Entrada de la línea a cifrar (necesaria para buscar el valor del caracter original que se desea cifrar).
    * @param i     Posición actual del caracter a buscar y de las tablas de cifrado/descifrado.
@@ -232,9 +232,9 @@ public class Cypher {
    * Asigna un valor descifrado correspondiente al caracter de la posición "i".
    * 
    * Si "i" = "0" o el valor de operacion[i]!=operacion[i-1] se sigue el siguiente patrón:
-   * <ul><li>En caso de que operacion[i]==1 se resta el desplazamiento, pero en caso de valer 0 se suma.</li></ul>
+   * <ul><li>En caso de que operacion[i]==true se resta el desplazamiento, pero en caso de ser false 0 se suma.</li></ul>
    * Si operacion[i]==operacion[i-1] se invierte el patrón anterior:
-   * <ul><li>En caso de que operacion[i]==1 se suma el desplazamiento, pero en caso de valer 0 se resta.</li></ul>
+   * <ul><li>En caso de que operacion[i]==true se suma el desplazamiento, pero en caso de ser false 0 se resta.</li></ul>
    * 
    * Lo que se pretende con esto es contrarrestar el patrón del cifrado con lo que poder descifrar el texto.
    * 
@@ -248,7 +248,7 @@ public class Cypher {
   }
   /**
    * Si "i" = "0" o el valor de operacion[i]!=operacion[i-1] se sigue el siguiente patrón:
-   * <ul><li>En caso de que operacion[i]==1 se resta el desplazamiento, pero en caso de valer 0 se suma.</li></ul>
+   * <ul><li>En caso de que operacion[i]==true se resta el desplazamiento, pero en caso de ser false 0 se suma.</li></ul>
    * 
    * Lo que se pretende con esto es contrarrestar el patrón del cifrado con lo que poder descifrar el texto.
    * 
@@ -263,7 +263,7 @@ public class Cypher {
   
   /**
    * Si operacion[i]==operacion[i-1] se invierte el patrón anterior:
-   * <ul><li>En caso de que operacion[i]==1 se suma el desplazamiento, pero en caso de valer 0 se resta.</li></ul>
+   * <ul><li>En caso de que operacion[i]==true se suma el desplazamiento, pero en caso de ser false 0 se resta.</li></ul>
    * 
    * Lo que se pretende con esto es contrarrestar el patrón del cifrado con lo que poder descifrar el texto.
    * 
@@ -406,9 +406,9 @@ public class Cypher {
    * @return  Índice (int) de la tabla desplazamiento.
    */
   private int indiceDesplazamiento(int i) {
-    if (llaveSeleccionada.getOperacion(i)) 
-      return (llaveSeleccionada.getCaseCaracter(i)) ? indiceMultiplicadoX2(i) : indiceMultiplicado(i);
-    return (llaveSeleccionada.getCaseCaracter(i)) ? indiceMultiplicado(i) : llaveSeleccionada.getIndiceDesplazamiento(i);
+    if (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) 
+      return (llaveSeleccionada.getCaseCaracter(i)) ? indiceMultiplicadoX2(ajustaValorPosicion(i)) : indiceMultiplicado(i);
+    return (llaveSeleccionada.getCaseCaracter(ajustaValorPosicion(i))) ? indiceMultiplicado(i) : llaveSeleccionada.getIndiceDesplazamiento(i);
   }
   
   /**
@@ -450,7 +450,7 @@ public class Cypher {
    * @return          Caracter (String) modificado o sin modificar.
    */
   private String invierteCaseCaracter(String caracter, int i) {
-    if (llaveSeleccionada.getCaseCaracter(i))
+    if (llaveSeleccionada.getCaseCaracter(ajustaValorPosicion(i)))
       return (caracter.equals(caracter.toUpperCase())) ? caracter.toLowerCase() : caracter.toUpperCase();
     return caracter;
   }
@@ -506,7 +506,7 @@ public class Cypher {
    * 
    * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
-  @Deprecated public String encripta(String linea) throws ErrorSeleccionLlave{
+  @Deprecated public String encripta(String linea) throws ErrorSeleccionLlave {
     compruebaLlave();
     salida = "";
     for (int i=0; i<linea.length();i++) {

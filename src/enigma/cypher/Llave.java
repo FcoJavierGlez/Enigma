@@ -791,7 +791,7 @@ public class Llave {
    * @return
    */
   public boolean getOperacion(int i) {
-    return (operacion.get(i%=operacion.size()));
+    return (operacion.get(i));
   }
   
   /**
@@ -802,7 +802,7 @@ public class Llave {
    * @return
    */
   public boolean getCaseCaracter(int i) {
-    return (caseCaracter.get(i%=caseCaracter.size()));
+    return (caseCaracter.get(i));
   }
   
   /**
