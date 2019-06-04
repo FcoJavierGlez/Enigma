@@ -2,7 +2,7 @@ package enigma.cypher;
 
 public class Caracteres {
   //Variable
-  private static final String CARACTERES = " ªº°\\!1|\"2@·3#$4%5&6¬/7(8)9=0?'¿¡^`[*+]¨´{çÇ}±<>;,:—._-«»qwe€rtyuiopaæsdfghjklñzxc¢vbnmQWER®TY¥UIOPAÆS§DÐFGHJKL£ÑZXC©VBNMáéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜâêîôûÂÊÎÔÛåÅ";
+  private static final String CARACTERES = " ªº°\\!1|\"2@·3#$4%5&6¬/7(8)9=0?'¿¡^`[*+]¨´{çÇ}±<>;,:._-«»qwe€rtyuiopaæsdfghjklñzxc¢vbnmQWER®TY¥UIOPAÆS§DÐFGHJKL£ÑZXC©VBNMáéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜâêîôûÂÊÎÔÛåÅ—\t";
   private String caracter;
   private int valor;
   

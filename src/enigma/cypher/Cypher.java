@@ -14,7 +14,8 @@ public class Cypher {
   
   private static ArrayList<Llave> llaves = new ArrayList<Llave>();   //Tabla de caracteres con valores aleatorios.
   private static String salida;
-  private Llave llaveSeleccionada;
+  private static String entrada;
+  private Llave llaveSeleccionada = null;
   
   
   //#################################     CONSTRUCTORES     #################################\\  
@@ -41,8 +42,11 @@ public class Cypher {
   
   /**
    * Crea una nueva llave.
+   * 
+   * @throws limiteLlavesException  Se lanza esta excepción cuando se pretenda generar o importar una llave teniendo almacenadas 10 llaves.
    */
-  public void generaLlave() {
+  public void generaLlave() throws limiteLlavesException {
+    limiteLlaves();
     llaves.add(new Llave());
   }
   
@@ -54,9 +58,41 @@ public class Cypher {
    * @throws versionLlaveIncorrecta Se lanza esta excepción cuando la versión de la llave a importar no coincide con la versión del programa.
    * @throws IOException            Se lanza esta cuando se peuda leer el fichero a importar.
    * @throws cabeceraInvalida       Se lanza esta excepción si al validar la cabecera no se corresponde con la forma correcta.
+   * @throws limiteLlavesException  Se lanza esta excepción cuando se pretenda generar o importar una llave teniendo almacenadas 10 llaves.
+   * @throws llaveDuplicada         Se lanza esta excepción si encuentra que hay dos llaves iguales.
    */
-  public void importaLlave(String ruta) throws IOException, versionLlaveIncorrecta, cabeceraInvalida {
+  public void importaLlave(String ruta) throws IOException, versionLlaveIncorrecta, cabeceraInvalida, limiteLlavesException, llaveDuplicada {
+    limiteLlaves();
     llaves.add(new Llave(ruta));
+    eliminaLlaveDuplicada();
+  }
+
+  /**
+   * Comprueba si la llave importada ya existe almacenada. En caso de existir elimina 
+   * la llave importada y lanza la excepción como aviso de lo ocurrido.
+   * 
+   * @throws llaveDuplicada  Se lanza esta excepción si encuentra que hay dos llaves iguales.
+   * 
+   */
+  private void eliminaLlaveDuplicada() throws llaveDuplicada {
+    for (int i=0; i<llaves.size()-1; i++) {
+      if ((llaves.get(llaves.size()-1)).getNombreLlave().equals((llaves.get(i)).getNombreLlave())) {
+        llaves.remove(llaves.size()-1);
+        throw new llaveDuplicada();
+      }
+    }
+  }
+
+
+  /**
+   * Comprueba si Cypher tiene almacenadas 10 llaves, en caso de ser así
+   * lanza la excepción limiteLlavesException().
+   * 
+   * @throws limiteLlavesException  Se lanza esta excepción cuando se pretenda generar o importar una llave teniendo almacenadas 10 llaves.
+   */
+  private void limiteLlaves() throws limiteLlavesException {
+    if (llaves.size()==10)
+      throw new limiteLlavesException();
   }
   
   /**
@@ -210,9 +246,10 @@ public class Cypher {
    */
   private void procesoDesencriptado() {
     for (int i=0; i<Texto.getTamannoEntrada(); i++) { //Selecciona una línea de entrada de Texto
+      entrada = transformaCadena(Texto.getLineaEntrada(i));
       salida = "";
       for (int j=0; j<Texto.getLineaEntrada(i).length(); j++) //Desencripta todos los caracteres de la línea
-        salida = salidaDescifrada(salida, asignaValorDescifrado(transformaCadena(Texto.getLineaEntrada(i)), j));
+        salida = salidaDescifrada(salida, asignaValorDescifrado(entrada, j));
       Texto.addSalida(salida);
     }
   }
