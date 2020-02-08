@@ -18,8 +18,11 @@ Una vez generada una llave con información aleatoria, o importada de una llave 
 
 El programa tendrá la capacidad de recoger un texto, bien introducido en un textarea o en una consola de comandos o bien importado de un fichero de texto plano, y cifrarlo usando la información de la llave seleccionada y del algoritmo del programa. Dando como resultado algo similar a esto:
 
-![Imagen con el poema del Señor de los Anillos sin cifrar](/img_markdown/anillo.png) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![Imagen con el poema del Señor de los Anillos cifrado](/img_markdown/anillo_cifrado.png) 
-&nbsp; _Poema del anillo del Señor de los anillos (sin cifrar)_ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _Poema del anillo del Señor de los anillos tras un proceso de cifrado_
+![Imagen con el poema del Señor de los Anillos sin cifrar](/img_markdown/anillo.png) 
+&nbsp; _Poema del anillo del Señor de los anillos (sin cifrar)_ 
+
+![Imagen con el poema del Señor de los Anillos cifrado](/img_markdown/anillo_cifrado.png) 
+&nbsp; _Poema del anillo del Señor de los anillos tras un proceso de cifrado_
 
 Finalmente, de igual manera, si obtenemos un texto cifrado y conocemos cuál fue la llave que se empleó para su cifrado, podremos revertir el proceso para recuperar la información original.
  
