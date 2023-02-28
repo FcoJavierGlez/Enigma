@@ -677,7 +677,7 @@ public class Llave {
    * @throws      FileNotFoundException 
    */
   private void creaEscritor(String ruta) throws FileNotFoundException {
-    w = new DataOutputStream(new FileOutputStream(ruta+".kyph"));
+    w = new DataOutputStream(new FileOutputStream(ruta + ".kyph"));
   }
   
   

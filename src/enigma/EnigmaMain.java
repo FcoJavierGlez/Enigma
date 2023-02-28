@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import enigma.cypher.Cypher;
 import enigma.cypher.ErrorSeleccionLlave;
+import enigma.cypher.limiteLlavesException;
 
 public class EnigmaMain {
   public static void main(String[] args) {
@@ -25,10 +26,12 @@ public class EnigmaMain {
             
       switch (opcion) {
         case 0:
-          c.imprimeTablas(numLlave);
+//          c.imprimeTablas(numLlave);
           break;
         case 1:
-          c.generaLlave();
+          try {
+            c.generaLlave();
+          } catch (limiteLlavesException e) {}
           break;
         case 2:
           if (c.getNumeroLlaves()==0) 

@@ -116,7 +116,7 @@ public class Cypher {
    * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
   public void seleccionaLlave(int numLlave) throws ErrorSeleccionLlave {
-    if (numLlave<1 || numLlave>llaves.size())
+    if ( numLlave < 1 || numLlave > llaves.size() )
       throw new ErrorSeleccionLlave();
     llaveSeleccionada=llaves.get(numLlave-1);
   }
@@ -138,8 +138,7 @@ public class Cypher {
    * @throws ErrorSeleccionLlave Se lanza esta excepción cuando la llave seleccionada no existe.
    */
   private void compruebaLlave() throws ErrorSeleccionLlave {
-    if (llaveSeleccionada==null)
-      throw new ErrorSeleccionLlave();
+    if (llaveSeleccionada == null) throw new ErrorSeleccionLlave();
   }
   
   
