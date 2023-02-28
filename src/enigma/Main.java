@@ -8,7 +8,7 @@ public class Main {
     public static void main (String [] args) {
         Cypher c = new Cypher();
 
-        final String KEY_NAME = "Yggdrasil";
+        final String KEY_NAME = "";
 
         try {
 //            c.generaLlave();
