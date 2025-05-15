@@ -1,4 +1,4 @@
-package enigma.cypher;
+package enigma.cypher.error;
 
 /**
  * Se lanza esta excepción cuando al importar una llave se encuentra que ya existe esa llave.

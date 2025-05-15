@@ -1,5 +1,8 @@
 package enigma.cypher;
 
+import enigma.cypher.error.cabeceraInvalida;
+import enigma.cypher.error.versionLlaveIncorrecta;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -214,7 +217,7 @@ public class Llave {
    */
   private String creaCuerpoA(String nombre) {
     for (int i=0; i<numerosAleatorios.size(); i++) {
-      nombre += Matematicas.conversionHexa(numerosAleatorios.get(i));      
+      nombre += Utils.conversionHexa(numerosAleatorios.get(i));
       nombre += (i!=numerosAleatorios.size()-1) ? "|" : "\n|*-*|";
     }
     return nombre;
@@ -228,7 +231,7 @@ public class Llave {
    */
   private String creaCuerpoB(String nombre) {
     for (int i=0; i<tablaCifrada.size(); i++) {
-      nombre += Matematicas.conversionHexa((tablaCifrada.get(i)).getValor());      
+      nombre += Utils.conversionHexa((tablaCifrada.get(i)).getValor());
       nombre += (i!=tablaCifrada.size()-1) ? "|" : "\n|-*-|";
     }
     return nombre;
@@ -242,7 +245,7 @@ public class Llave {
    */
   private String creaCuerpoC(String nombre) {
     for (int i=0; i<desplazamiento.size(); i++) {
-      nombre += Matematicas.conversionHexa(desplazamiento.get(i));      
+      nombre += Utils.conversionHexa(desplazamiento.get(i));
       nombre += (i!=desplazamiento.size()-1) ? ":" : "\n|-*_|";
     }
     return nombre;
@@ -256,7 +259,7 @@ public class Llave {
    */
   private String creaCuerpoD(String nombre) {
     for (int i=0; i<indiceDesplazamiento.size(); i++) {
-      nombre += Matematicas.conversionHexa(indiceDesplazamiento.get(i));      
+      nombre += Utils.conversionHexa(indiceDesplazamiento.get(i));
       nombre += (i!=indiceDesplazamiento.size()-1) ? ":" : "\n|_*-|";
     }
     return nombre;
@@ -386,8 +389,8 @@ public class Llave {
       throw new cabeceraInvalida();
     int k = 0; 
     for (int i=5; i<informacion.get(0).length(); i+=3) {
-      tablaOriginal.add(new Caracteres(Matematicas.hexaADecimal(informacion.get(0).substring(i, i+2))));
-      tablaCifrada.add(new Caracteres(Matematicas.hexaADecimal(informacion.get(0).substring(i, i+2))));
+      tablaOriginal.add(new Caracteres(Utils.hexaADecimal(informacion.get(0).substring(i, i+2))));
+      tablaCifrada.add(new Caracteres(Utils.hexaADecimal(informacion.get(0).substring(i, i+2))));
       (tablaOriginal.get(k)).setValor(k); 
       (tablaCifrada.get(k)).setValor(k);
       k++;
@@ -415,7 +418,7 @@ public class Llave {
       throw new cabeceraInvalida();
     int k = 0;
     for (int i=5; i<informacion.get(1).length(); i+=3) {
-      (tablaCifrada.get(k)).setValor(Matematicas.hexaADecimal(informacion.get(1).substring(i, i+2)));
+      (tablaCifrada.get(k)).setValor(Utils.hexaADecimal(informacion.get(1).substring(i, i+2)));
       k++;
     }
   }
@@ -440,7 +443,7 @@ public class Llave {
     if (!validaCabeceraC())
       throw new cabeceraInvalida();
     for (int i=5; i<informacion.get(2).length(); i+=3) {
-      desplazamiento.add(Matematicas.hexaADecimal(informacion.get(2).substring(i, i+2)));
+      desplazamiento.add(Utils.hexaADecimal(informacion.get(2).substring(i, i+2)));
     }
   }
   
@@ -464,7 +467,7 @@ public class Llave {
     if (!validaCabeceraD())
       throw new cabeceraInvalida();
     for (int i=5; i<informacion.get(3).length(); i+=3) {
-      indiceDesplazamiento.add(Matematicas.hexaADecimal(informacion.get(3).substring(i, i+2)));
+      indiceDesplazamiento.add(Utils.hexaADecimal(informacion.get(3).substring(i, i+2)));
     }
   }
   
@@ -594,8 +597,8 @@ public class Llave {
   private void almacenaCuerpoA() {
     linea="|***|";
     for (int i=0; i<tablaOriginal.size(); i++)
-      linea+=(i!=tablaOriginal.size()-1) ? (Matematicas.conversionHexa(tablaOriginal.get(i).getPosicionCaracter(tablaOriginal.get(i).getCaracter()))+"|") : 
-        (Matematicas.conversionHexa(tablaOriginal.get(i).getPosicionCaracter(tablaOriginal.get(i).getCaracter())));
+      linea+=(i!=tablaOriginal.size()-1) ? (Utils.conversionHexa(tablaOriginal.get(i).getPosicionCaracter(tablaOriginal.get(i).getCaracter()))+"|") :
+        (Utils.conversionHexa(tablaOriginal.get(i).getPosicionCaracter(tablaOriginal.get(i).getCaracter())));
     informacion.add(linea);
   }
   
@@ -605,8 +608,8 @@ public class Llave {
   private void almacenaCuerpoB() {
     linea="|*-*|";
     for (int i=0; i<tablaCifrada.size(); i++)
-      linea+=(i!=tablaCifrada.size()-1) ? (Matematicas.conversionHexa(tablaCifrada.get(i).getValor())+"|") : 
-        (Matematicas.conversionHexa(tablaCifrada.get(i).getValor()));
+      linea+=(i!=tablaCifrada.size()-1) ? (Utils.conversionHexa(tablaCifrada.get(i).getValor())+"|") :
+        (Utils.conversionHexa(tablaCifrada.get(i).getValor()));
     informacion.add(linea);
   }
   
@@ -616,8 +619,8 @@ public class Llave {
   private void almacenaCuerpoC() {
     linea="|-*-|";
     for (int i=0; i<desplazamiento.size(); i++)
-      linea+=(i!=desplazamiento.size()-1) ? (Matematicas.conversionHexa(desplazamiento.get(i))+":") : 
-        (Matematicas.conversionHexa(desplazamiento.get(i)));
+      linea+=(i!=desplazamiento.size()-1) ? (Utils.conversionHexa(desplazamiento.get(i))+":") :
+        (Utils.conversionHexa(desplazamiento.get(i)));
     informacion.add(linea);
   }
   
@@ -627,8 +630,8 @@ public class Llave {
   private void almacenaCuerpoD() {
     linea="|-*_|";
     for (int i=0; i<indiceDesplazamiento.size(); i++)
-      linea+=(i!=indiceDesplazamiento.size()-1) ? (Matematicas.conversionHexa(indiceDesplazamiento.get(i))+":") : 
-        (Matematicas.conversionHexa(indiceDesplazamiento.get(i)));
+      linea+=(i!=indiceDesplazamiento.size()-1) ? (Utils.conversionHexa(indiceDesplazamiento.get(i))+":") :
+        (Utils.conversionHexa(indiceDesplazamiento.get(i)));
     informacion.add(linea);
   }
   
@@ -660,9 +663,9 @@ public class Llave {
    * @throws IOException Se lanza esta excepción cuando no se pueda crear el fichero.
    */
   private void guardaFichero() throws IOException {
-    for (int i=0; i<7; i++) {
-      if (i!=6)
-        w.writeUTF(informacion.get(i)+"\n");
+    for (int i = 0; i < 7; i++) {
+      if (i != 6)
+        w.writeUTF(informacion.get(i) + "\n");
       else
         w.writeUTF(informacion.get(i));
     }
@@ -699,7 +702,7 @@ public class Llave {
    * @return        Devuelve el valor ajustado del desplazamiento (int).
    */
   public int getDesplazamiento(int indice) {
-    if (indice>=this.desplazamiento.size()) {
+    if (indice >= this.desplazamiento.size()) {
       indice %= this.desplazamiento.size();
       return this.desplazamiento.get(indice);
     } else

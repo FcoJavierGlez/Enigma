@@ -1,4 +1,4 @@
-package enigma.cypher;
+package enigma.cypher.error;
 
 /**
  * Se lanzará exta excepción cuando la versión de la llave a importar no coincida con la versión del programa.

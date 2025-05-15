@@ -1,4 +1,4 @@
-package enigma.cypher;
+package enigma.cypher.error;
 
 /**
  * Se lanzará esta excepción cuando no haya ninguna llave seleccionada.

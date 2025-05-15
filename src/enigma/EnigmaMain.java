@@ -3,8 +3,8 @@ package enigma;
 import java.util.Scanner;
 
 import enigma.cypher.Cypher;
-import enigma.cypher.ErrorSeleccionLlave;
-import enigma.cypher.limiteLlavesException;
+import enigma.cypher.error.ErrorSeleccionLlave;
+import enigma.cypher.error.limiteLlavesException;
 
 public class EnigmaMain {
   public static void main(String[] args) {

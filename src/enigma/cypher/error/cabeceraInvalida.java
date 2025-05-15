@@ -1,4 +1,4 @@
-package enigma.cypher;
+package enigma.cypher.error;
 
 /**
  * Esta excepción si al comprobarse las cabeceras de las llaves a importar no son válidas.

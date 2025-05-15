@@ -1,4 +1,4 @@
-package enigma.cypher;
+package enigma.cypher.error;
 
 /**
  * Excepción que se lanza cuando Cypher tiene almacenadas un conjunto de 10 llaves y se pretende

@@ -1,5 +1,7 @@
 package enigma.cypher;
 
+import enigma.cypher.error.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -118,7 +120,7 @@ public class Cypher {
   public void seleccionaLlave(int numLlave) throws ErrorSeleccionLlave {
     if ( numLlave < 1 || numLlave > llaves.size() )
       throw new ErrorSeleccionLlave();
-    llaveSeleccionada=llaves.get(numLlave-1);
+    llaveSeleccionada = llaves.get(numLlave-1);
   }
   
   /**
@@ -127,9 +129,9 @@ public class Cypher {
    * @param numLlave  Posición actual de la llave en la lista de llaves almacenadas.
    */
   public void eliminaLlave(int numLlave) {
-    if (llaves.get(numLlave-1)==llaveSeleccionada)
-      llaveSeleccionada=null;
-    llaves.remove(numLlave-1);
+    if (llaves.get(numLlave-1) == llaveSeleccionada)
+      llaveSeleccionada = null;
+    llaves.remove(numLlave - 1);
   }
   
   /**
@@ -162,9 +164,9 @@ public class Cypher {
    * en la tabla entradaTexto de la Clase Texto.
    */
   private void procesoEncriptado() {
-    for (int i=0; i<Texto.getTamannoEntrada(); i++) { //Selecciona una línea de entrada de Texto
+    for (int i = 0; i < Texto.getTamannoEntrada(); i++) { //Selecciona una línea de entrada de Texto
       salida = "";
-      for (int j=0; j<Texto.getLineaEntrada(i).length(); j++)  //Encripta todos los caracteres de la línea
+      for (int j = 0; j < Texto.getLineaEntrada(i).length(); j++)  //Encripta todos los caracteres de la línea
         salida = salidaCifrada(salida, asignaValorCifrado(Texto.getLineaEntrada(i), j), j);
       Texto.addSalida(transformaCadena(salida));
     }
@@ -178,7 +180,7 @@ public class Cypher {
    * @return                Devuelve la versión actualizada, con el nuevo caracter concatenado, de la variable salida (String).
    */
   private String salidaCifrada(String salida, int valorCifrado, int i) {
-    return salida += invierteCaseCaracter(llaveSeleccionada.getCaracterCifrado(ajustaValorTabla(valorCifrado)), i);
+    return salida += invierteCaseCaracter( llaveSeleccionada.getCaracterCifrado( ajustaValorTabla(valorCifrado) ), i );
   }
 
   /**
@@ -194,7 +196,7 @@ public class Cypher {
    * @return       Devuelve el valor del caracter cifrado
    */
   private int asignaValorCifrado(String linea, int i) {   //PENDIENTE DE TESTEAR, AL FINAL DEL CÓDIGO ESTÁ EL MÉTODO ANTERIOR A ÉSTE
-    return (ajustaValorPosicion(i)==0 || llaveSeleccionada.getOperacion(ajustaValorPosicion(i))!=llaveSeleccionada.getOperacion(ajustaValorPosicion(i)-1))
+    return ( ajustaValorPosicion(i) == 0 || llaveSeleccionada.getOperacion( ajustaValorPosicion(i) ) != llaveSeleccionada.getOperacion(ajustaValorPosicion(i)-1) )
         ? (valorCifradoNormal(linea, i)) : (valorCifradoInverso(linea, i));
   }
   
@@ -220,8 +222,8 @@ public class Cypher {
    * @return      Valor del caracter original.
    */
   private int valorCifradoInverso(String linea, int i) {
-    return (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) ? (buscaValorOriginal(linea.substring(i, i+1)) - llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i)))) 
-        : (buscaValorOriginal(linea.substring(i, i+1)) + llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))));
+    return (llaveSeleccionada.getOperacion(ajustaValorPosicion(i))) ? (buscaValorOriginal(linea.substring(i, i + 1)) - llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))))
+        : (buscaValorOriginal(linea.substring(i, i + 1)) + llaveSeleccionada.getDesplazamiento(indiceDesplazamiento(ajustaValorPosicion(i))));
   }
   
   
@@ -244,10 +246,10 @@ public class Cypher {
    * en la tabla entradaTexto de la Clase Texto. 
    */
   private void procesoDesencriptado() {
-    for (int i=0; i<Texto.getTamannoEntrada(); i++) { //Selecciona una línea de entrada de Texto
+    for (int i = 0; i < Texto.getTamannoEntrada(); i++) { //Selecciona una línea de entrada de Texto
       entrada = transformaCadena(Texto.getLineaEntrada(i));
       salida = "";
-      for (int j=0; j<Texto.getLineaEntrada(i).length(); j++) //Desencripta todos los caracteres de la línea
+      for (int j = 0; j < Texto.getLineaEntrada(i).length(); j++) //Desencripta todos los caracteres de la línea
         salida = salidaDescifrada(salida, asignaValorDescifrado(entrada, j));
       Texto.addSalida(salida);
     }
