@@ -70,11 +70,11 @@ public class Main {
          *
          */
         /*      BLOQUE 4: DESCIFRAR MENSAJE      */
-//        try {
-//            Texto.importaFichero("data\\messages\\" + MESSAGE_NAME + "_cifrado.txt");
-//            c.desencriptaTexto();
-//            Texto.exportaFichero("data\\messages\\" + MESSAGE_NAME + "_descifrado.txt");
-//        } catch (IOException | ErrorSeleccionLlave e) {}
+        try {
+            Texto.importaFichero("data\\messages\\" + MESSAGE_NAME + "_cifrado.txt");
+            c.desencriptaTexto();
+            Texto.exportaFichero("data\\messages\\" + MESSAGE_NAME + "_descifrado.txt");
+        } catch (IOException | ErrorSeleccionLlave e) {}
 
 
     }
